@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Reality Portal</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070a18">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 80'%3E%3Crect width='64' height='80' rx='8' fill='%23070a18'/%3E%3Cpath d='M26 3 L32 14 L38 3' stroke='%23c9a96e' stroke-width='2.5' fill='none' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='5' rx='5' ry='2.5' stroke='%23c9a96e' stroke-width='1.8' fill='none'/%3E%3Cellipse cx='44' cy='5' rx='5' ry='2.5' stroke='%23c9a96e' stroke-width='1.8' fill='none'/%3E%3Cellipse cx='14' cy='6' rx='4' ry='2' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3Cellipse cx='50' cy='6' rx='4' ry='2' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3Cline x1='32' y1='14' x2='32' y2='22' stroke='%23c9a96e' stroke-width='2'/%3E%3Cpath d='M14 25 L18 22 L46 22 L50 25 L52 30 L52 65 L50 70 L14 70 L12 65 L12 30 Z' fill='%231a0a05' stroke='%23c9a96e' stroke-width='1.8'/%3E%3Cpath d='M16 27 L19 24.5 L45 24.5 L48 27 L49.5 31 L49.5 63.5 L48 67 L16 67 L14.5 63.5 L14.5 31 Z' fill='%238b1a1a'/%3E%3Cpath d='M16 27 L32 45 L48 27 L45 24.5 L19 24.5 Z' fill='%23c02020' opacity='0.85'/%3E%3Cpath d='M16 27 L14.5 31 L14.5 63.5 L32 45 Z' fill='%23901818' opacity='0.8'/%3E%3Cpath d='M48 27 L49.5 31 L49.5 63.5 L32 45 Z' fill='%237a1010' opacity='0.8'/%3E%3Cpath d='M14.5 63.5 L16 67 L48 67 L49.5 63.5 L32 45 Z' fill='%23a01515' opacity='0.75'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23070a18'/%3E%3Cpath d='M72 22 L90 50 L108 22' stroke='%23c9a96e' stroke-width='4' fill='none' stroke-linejoin='round'/%3E%3Cellipse cx='58' cy='26' rx='10' ry='5' stroke='%23c9a96e' stroke-width='3' fill='none'/%3E%3Cellipse cx='122' cy='26' rx='10' ry='5' stroke='%23c9a96e' stroke-width='3' fill='none'/%3E%3Cellipse cx='46' cy='28' rx='8' ry='4' stroke='%23c9a96e' stroke-width='2.5' fill='none'/%3E%3Cellipse cx='134' cy='28' rx='8' ry='4' stroke='%23c9a96e' stroke-width='2.5' fill='none'/%3E%3Cline x1='90' y1='50' x2='90' y2='62' stroke='%23c9a96e' stroke-width='3.5'/%3E%3Cpath d='M48 68 L56 62 L124 62 L132 68 L136 78 L136 150 L132 158 L48 158 L44 150 L44 78 Z' fill='%231a0a05' stroke='%23c9a96e' stroke-width='3'/%3E%3Cpath d='M52 72 L58 66 L122 66 L128 72 L131 80 L131 146 L128 153 L52 153 L49 146 L49 80 Z' fill='%238b1a1a'/%3E%3Cpath d='M52 72 L90 112 L128 72 L122 66 L58 66 Z' fill='%23c02020' opacity='0.85'/%3E%3Cpath d='M52 72 L49 80 L49 146 L90 112 Z' fill='%23901818' opacity='0.8'/%3E%3Cpath d='M128 72 L131 80 L131 146 L90 112 Z' fill='%237a1010' opacity='0.8'/%3E%3Cpath d='M49 146 L52 153 L128 153 L131 146 L90 112 Z' fill='%23a01515' opacity='0.75'/%3E%3Cpath d='M58 75 L66 84 L58 93 Z' fill='rgba(255,200,200,0.2)'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.0/babel.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;width:100%;overflow:hidden}
+body{font-family:'Nunito',sans-serif;background:#070a18;color:#e8e4f0;-webkit-font-smoothing:antialiased}
+input,textarea,button,select{outline:none;font-family:'Nunito',sans-serif}
+input::placeholder,textarea::placeholder{color:rgba(160,140,200,0.3)}
+input[type="range"]{-webkit-appearance:none;appearance:none;background:rgba(140,110,230,0.15);border-radius:4px;height:6px;width:100%;cursor:pointer;touch-action:manipulation;padding:8px 0;margin:4px 0}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#8b6ce0;cursor:pointer;border:2px solid rgba(140,110,230,0.3)}
+input[type="range"]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#8b6ce0;border:2px solid rgba(140,110,230,0.3)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(140,110,230,0.2);border-radius:4px}
+.transcript-scroll::-webkit-scrollbar{width:0;display:none}.transcript-scroll{-ms-overflow-style:none;scrollbar-width:none}
+@keyframes breathe{0%,100%{transform:scale(1);box-shadow:0 0 30px rgba(140,110,230,0.15)}50%{transform:scale(1.08);box-shadow:0 0 60px rgba(140,110,230,0.25)}}
+@keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:0.8}}
+@keyframes nebulaDrift{0%{transform:translate(0,0)}50%{transform:translate(15px,-10px)}100%{transform:translate(0,0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGrow{0%{transform:scale(0.7)}100%{transform:scale(1.1)}}
+@keyframes pulseShrink{0%{transform:scale(1.1)}100%{transform:scale(0.7)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes rubyGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(192,32,32,0.35)) drop-shadow(0 0 10px rgba(192,32,32,0.15))}50%{filter:drop-shadow(0 0 8px rgba(192,32,32,0.55)) drop-shadow(0 0 18px rgba(192,32,32,0.3))}}
+@keyframes rubyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes ringPulse{0%,100%{opacity:0.06}50%{opacity:0.16}}
+@keyframes ringPulse2{0%,100%{opacity:0.04}50%{opacity:0.1}}
+@keyframes ringPulse3{0%,100%{opacity:0.1}50%{opacity:0.22}}
+.fi{animation:fadeIn 0.4s ease-out}.sf{position:fixed;inset:0;pointer-events:none;z-index:0}.nb{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(60px)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+const CATS=["Wealth","Health","Identity","Relationships","Career","Spiritual","Custom"];
+const BIN=[{n:"Delta (Sleep)",hz:2,b:150},{n:"Theta (Meditation)",hz:5,b:200},{n:"Alpha (Relaxed)",hz:10,b:250},{n:"Beta (Focus)",hz:18,b:300}];
+const SOL=[{n:"396Hz",f:396,d:"Liberation"},{n:"432Hz",f:432,d:"Harmony"},{n:"528Hz",f:528,d:"Transformation"},{n:"639Hz",f:639,d:"Connection"},{n:"741Hz",f:741,d:"Expression"},{n:"852Hz",f:852,d:"Intuition"}];
+const TIMERS=[15,30,45,60,90,120];
+const BRTH=[{n:"4-7-8 Relaxing",i:4,h:7,e:8},{n:"Box Breathing",i:4,h:4,e:4,h2:4},{n:"Simple Calm",i:4,h:0,e:6}];
+const BP_DOMAINS=["Wealth & Finances","Health & Body","Relationships & Love","Career & Purpose","Identity & Self-Image","Spiritual Life"];
+const SCRIPTURES=[
+  {ref:"Joshua 1:8",text:"This Book of the Law shall not depart from your mouth, but you shall meditate on it day and night, so that you may be careful to do according to all that is written in it. For then you will make your way prosperous, and then you will have good success."},
+  {ref:"Mark 11:22-24",text:"Have faith in God. Truly I tell you, if anyone says to this mountain, Go, throw yourself into the sea, and does not doubt in their heart but believes that what they say will happen, it will be done for them. Whatever you ask for in prayer, believe that you have received it, and it will be yours."},
+  {ref:"Proverbs 4:23",text:"Guard your heart above all else, for from it flow the issues of life."},
+  {ref:"Psalm 81:10",text:"I am the Lord your God, who brought you up out of Egypt. Open wide your mouth and I will fill it."},
+  {ref:"Proverbs 23:7",text:"As a man thinks in his heart, so is he."},
+  {ref:"John 15:7",text:"If you remain in me and my words remain in you, ask whatever you wish, and it will be done for you."},
+  {ref:"Hebrews 11:1",text:"Now faith is the substance of things hoped for, the evidence of things not seen."},
+  {ref:"2 Corinthians 4:18",text:"So we fix our eyes not on what is seen, but on what is unseen, since what is seen is temporary, but what is unseen is eternal."},
+  {ref:"Romans 4:17",text:"God who gives life to the dead and calls those things which do not exist as though they did."},
+  {ref:"Isaiah 46:10",text:"I make known the end from the beginning, from ancient times, what is still to come."}
+];
+const CORE_DECL="Reality responds to me. The fabric of the world is controllable.\nI am not a victim of my current reality — I created it by default. I now create it intentionally.\nMy heart is my broadcast tower. What I hold there, I manifest.\nIn Christ, all things are mine. I ask as Him — in love, with zero fear.\nI have already designed my new reality. I inhabit it now. I will not retreat.\nDay and night I meditate in it. It is done. Good success is inevitable.";
+const PHASE_TEMPLATE="[PHASE 1 — GROUNDING]\nClose your eyes. Take a deep breath. Release every thread of fear, doubt, and anxiety. You are stepping out of the old reality now. Feel the love of God surround you. You are safe. You are held. There is zero fear here — only love, only faith, only certainty.\n\n[pause 5s]\n\n[PHASE 2 — STEP INTO YOUR REALITY]\nNow see it. Your new reality is before you like a doorway of light. Step through it. You are no longer observing from the outside — you are inside it. You are living it. Feel the ground beneath your feet in this new world. Look around. What do you see?\n\n[pause 8s]\n\n[PHASE 3 — HOLD THE GROUND]\nYou are here. This is real. Feel every detail — the textures, the sounds, the warmth, the emotions. Let the feeling of having it all wash over you completely. Your heart is broadcasting this frequency right now. The atoms are responding. Stay here. Do not retreat.\n\n[pause 10s]\n\n[PHASE 4 — SEAL IT]\nIt is done. This reality is locked in. The 3D world is already reorganizing around your new energy signature. You do not need to figure out the how. You only need to hold this frequency. As a man thinks in his heart, so is he. You have thought it. You have felt it. You are it.\n\n[pause 5s]\n\nI occupy this reality until it manifests. I will not retreat. Good success is inevitable.";
+
+const P={bg:"#070a18",glass:"rgba(255,255,255,0.04)",gb:"rgba(140,110,230,0.08)",ac:"#8b6ce0",ad:"#6c4fd6",tx:"#e8e4f0",mt:"rgba(160,140,200,0.5)",tl:"#5abfbf",rd:"#c45c5c",gd:"#c9a96e"};
+const ls=(k,fb)=>{try{const v=localStorage.getItem("rp_"+k);return v?JSON.parse(v):fb}catch{return fb}};
+const ss=(k,v)=>{try{localStorage.setItem("rp_"+k,JSON.stringify(v))}catch{}};
+function hash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h).toString(36)}
+function prep(t){return t.replace(/\[pause\s+(\d+)s?\]/gi,(m,s)=>"\n"+".".repeat(Math.min(parseInt(s)*2,20))+"\n").replace(/\[PHASE \d[^]]*?\]/gi,"").trim()}
+function fmt(s){return Math.floor(s/60)+":"+(s%60).toString().padStart(2,"0")}
+function timeMode(){const h=new Date().getHours();return h>=20||h<6?"night":h<12?"morning":"day"}
+
+function Stars(){const r=useRef(null);useEffect(()=>{if(!r.current)return;r.current.innerHTML="";for(let i=0;i<80;i++){const d=document.createElement("div");const sz=Math.random()*2+0.5;Object.assign(d.style,{position:"absolute",width:sz+"px",height:sz+"px",borderRadius:"50%",background:"rgba(200,190,255,"+(Math.random()*0.4+0.1)+")",left:Math.random()*100+"%",top:Math.random()*100+"%",animation:"twinkle "+(3+Math.random()*5)+"s ease-in-out "+Math.random()*3+"s infinite"});r.current.appendChild(d)}},[]);return<div ref={r} className="sf"/>}
+function Nebs(){return<><div className="nb" style={{width:300,height:300,background:"radial-gradient(circle,rgba(90,60,180,0.08),transparent 70%)",top:-50,right:-80,animation:"nebulaDrift 20s ease-in-out infinite"}}/><div className="nb" style={{width:250,height:250,background:"radial-gradient(circle,rgba(40,60,160,0.06),transparent 70%)",bottom:50,left:-60,animation:"nebulaDrift 25s ease-in-out infinite reverse"}}/></>}
+function Sl({l,v,onChange,min=0,max=1,step=0.01,ic}){return<div style={{marginBottom:16,padding:"2px 0"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:13,color:P.mt}}>{ic} {l}</span><span style={{fontSize:12,color:P.ac,fontWeight:600}}>{Math.round(v*100)}%</span></div><input type="range" min={min} max={max} step={step} value={v} onChange={e=>onChange(parseFloat(e.target.value))} style={{width:"100%",display:"block"}}/></div>}
+function Bt({children,onClick,v="primary",style:s={},disabled,ld}){const st={primary:{background:"linear-gradient(135deg,"+P.ac+","+P.ad+")",color:"#fff",fontWeight:700},secondary:{background:P.glass,color:P.tx,border:"1px solid "+P.gb},danger:{background:"transparent",color:P.rd,border:"1px solid rgba(196,92,92,0.2)"},ghost:{background:"transparent",color:P.mt},gold:{background:"linear-gradient(135deg,"+P.gd+",#a08040)",color:"#0a0e1a",fontWeight:700}};return<button onClick={onClick} disabled={disabled||ld} style={{padding:"11px 22px",borderRadius:12,border:"none",fontSize:14,cursor:disabled?"not-allowed":"pointer",opacity:disabled?0.5:1,transition:"all 0.2s",...st[v],...s}}>{ld?"...":children}</button>}
+function Cd({children,style:s={},onClick}){return<div onClick={onClick} style={{background:P.glass,borderRadius:16,padding:18,border:"1px solid "+P.gb,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",cursor:onClick?"pointer":"default",transition:"all 0.3s",...s}}>{children}</div>}
+function GI({value,onChange,placeholder,type="text",style:sx={}}){return<input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{width:"100%",padding:"12px 14px",borderRadius:12,border:"1px solid "+P.gb,background:P.glass,color:P.tx,fontSize:14,...sx}}/>}
+function Tg({value,onChange}){return<button onClick={()=>onChange(!value)} style={{width:46,height:26,borderRadius:13,border:"none",cursor:"pointer",background:value?P.ac:"rgba(255,255,255,0.08)",position:"relative",transition:"background 0.3s"}}><div style={{width:20,height:20,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:value?23:3,transition:"left 0.3s"}}/></button>}
+function Hd({text}){return<h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,marginBottom:22,letterSpacing:0.5}}>{text}</h2>}
+function Back({onClick}){return<button onClick={onClick} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14}}>← Back</button>}
+function Logo({size=24,glow=true,style:sx={}}){const s=size;const w=s*1.1;const h=s*1.0;
+  return<div style={{display:"inline-block",verticalAlign:"middle",animation:glow?"rubyGlow 3s ease-in-out infinite":"none",...sx}}>
+  <svg width={w} height={h} viewBox="0 0 100 90" style={{display:"block",animation:glow?"rubyFloat 6s ease-in-out infinite":"none"}}>
+  <rect x="8" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-12,11.5,5.5)"/>
+  <rect x="14" y="2.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(5,17.5,5)"/>
+  <rect x="20" y="3.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-8,23.5,6)"/>
+  <rect x="26" y="5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(12,29.5,7.5)"/>
+  <rect x="31" y="7.5" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(30,34,10)"/>
+  <rect x="35" y="11" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(55,38,13.5)"/>
+  <rect x="39" y="15" width="5" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(75,41.5,17.5)"/>
+  <rect x="67" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(12,70.5,5.5)"/>
+  <rect x="73" y="2.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-5,76.5,5)"/>
+  <rect x="79" y="3.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(8,82.5,6)"/>
+  <rect x="85" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-6,88.5,5.5)"/>
+  <rect x="62" y="5" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-30,65,7.5)"/>
+  <rect x="58" y="9" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-55,61,11.5)"/>
+  <rect x="54" y="13" width="5" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-75,56.5,15.5)"/>
+  <path d="M44 20 L50 26 L56 20" stroke="#c9a96e" strokeWidth="2.2" fill="none" strokeLinejoin="round"/>
+  <circle cx="45.5" cy="21" r="0.8" fill="#c9a96e" opacity="0.5"/><circle cx="50" cy="24.5" r="0.8" fill="#c9a96e" opacity="0.5"/><circle cx="54.5" cy="21" r="0.8" fill="#c9a96e" opacity="0.5"/>
+  <line x1="50" y1="26" x2="50" y2="32" stroke="#c9a96e" strokeWidth="2"/>
+  <path d="M32 35 L36 32 L64 32 L68 35 L70 40 L70 75 L68 80 L32 80 L30 75 L30 40 Z" fill="#1a0a05" stroke="#c9a96e" strokeWidth="1.8"/>
+  <path d="M34 37 L37 34.5 L63 34.5 L66 37 L67.5 41 L67.5 73.5 L66 77 L34 77 L32.5 73.5 L32.5 41 Z" fill="#8b1a1a"/>
+  <path d="M34 37 L50 55 L66 37 L63 34.5 L37 34.5 Z" fill="#c02020" opacity="0.85"/>
+  <path d="M34 37 L32.5 41 L32.5 73.5 L50 55 Z" fill="#901818" opacity="0.8"/>
+  <path d="M66 37 L67.5 41 L67.5 73.5 L50 55 Z" fill="#7a1010" opacity="0.8"/>
+  <path d="M32.5 73.5 L34 77 L66 77 L67.5 73.5 L50 55 Z" fill="#a01515" opacity="0.75"/>
+  <path d="M36 38 L40 42 L36 46 Z" fill="rgba(255,200,200,0.18)"/>
+  <circle cx="30.3" cy="38" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="46" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="54" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="62" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="70" r="1" fill="#c9a96e" opacity="0.35"/>
+  <circle cx="69.7" cy="38" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="46" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="54" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="62" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="70" r="1" fill="#c9a96e" opacity="0.35"/>
+  </svg></div>}
+
+function App(){
+  const SB_URL="https://fmsntzbtgmecissnwbqd.supabase.co";
+  const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtc250emJ0Z21lY2lzc253YnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMDY5MDMsImV4cCI6MjA5MzY4MjkwM30.-zzYzt_3yWji4OJioCNDD-0fgW0Cel28Lpbf9t4sYMc";
+  const[elKey,setElKey]=useState(()=>ls("elkey",""));
+  const[sb]=useState(()=>window.supabase.createClient(SB_URL,SB_KEY));
+  const[user,setUser]=useState(null);const[aLoading,setAL]=useState(true);
+  const[scripts,setSc]=useState([]);const[affs,setAf]=useState([]);const[sessions,setSe]=useState([]);
+  const[blueprint,setBp]=useState({});const[evidence,setEv]=useState([]);
+  const[sett,setSett]=useState({genderPref:"female",speechRate:0.82,speechPitch:0.95,pauseBetweenSentences:1200,loopGap:45,breathingEnabled:true,breathingPattern:0,elevenLabsVoiceId:"",elevenLabsVoiceName:"",skipEnergyCheckin:false,skipOnboarding:false});
+  const[voices,setVoices]=useState([]);const[vLoading,setVL]=useState(false);
+  const[vw,setVw]=useState("auth");const[edSc,setEdSc]=useState(null);const[edAf,setEdAf]=useState(null);
+  const[playing,setPlaying]=useState(false);const[paused,setPaused]=useState(false);const[cur,setCur]=useState(null);
+  const[loopOn,setLoop]=useState(true);const[slpM,setSlpM]=useState(0);const[tLeft,setTLeft]=useState(null);
+  const[dimmed,setDim]=useState(false);const[isAff,setIsAff]=useState(false);const[aLd,setALd]=useState(false);
+  const[ss2,setSs]=useState({ambient:0,harp:0,rain:0,binaural:0,solfeggio:0});const ss2R=useRef(ss2);
+  useEffect(()=>{ss2R.current=ss2},[ss2]);
+  const[binP,setBinP]=useState(1);const[solP,setSolP]=useState(2);
+  const[brAct,setBrAct]=useState(false);const[brPh,setBrPh]=useState("");const[brCt,setBrCt]=useState(0);
+  const[energyPhase,setEP]=useState(false);const[energyChoice,setEC]=useState(null);const[showSS,setShowSS]=useState(false);
+  const[alignment,setAlignment]=useState(null);const[curTime,setCurTime]=useState(0);const[sentences,setSentences]=useState([]);const[audioDur,setAudioDur]=useState(0);
+  const tOk=useRef(false);const mG=useRef(null);const ambR=useRef(null);const hpR=useRef(null);const hpI=useRef(null);
+  const rnR=useRef(null);const rnF=useRef(null);const bL=useRef(null);const bR=useRef(null);const bPL=useRef(null);const bPR=useRef(null);
+  const sO=useRef(null);const plR=useRef(false);const paR=useRef(false);const tmR=useRef(null);const auE=useRef(null);const seS=useRef(null);
+
+  // Supabase init
+  useEffect(()=>{
+    sb.auth.getSession().then(({data})=>{setUser(data.session?.user||null);setAL(false);setVw(data.session?.user?"library":"auth")});
+    sb.auth.onAuthStateChange((ev,s)=>{setUser(s?.user||null);if(s?.user)setVw("library")});
+  },[]);
+
+  // Load data
+  useEffect(()=>{if(!sb||!user)return;(async()=>{
+    const{data:sc}=await sb.from("scripts").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(sc)setSc(sc);
+    const{data:af}=await sb.from("affirmations").select("*").eq("user_id",user.id).order("created_at",{ascending:false});
+    if(af){setAf(af);if(af.length===0){const{data:d}=await sb.from("affirmations").insert({user_id:user.id,title:"Core Declarations",content:CORE_DECL}).select().single();if(d)setAf([d])}}
+    const{data:se}=await sb.from("sessions").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(se)setSe(se);
+    const{data:bp}=await sb.from("reality_blueprint").select("*").eq("user_id",user.id);
+    if(bp){const m={};bp.forEach(r=>m[r.domain]=r);setBp(m)}
+    const{data:ev}=await sb.from("evidence_journal").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(ev)setEv(ev);
+    const{data:st}=await sb.from("user_settings").select("*").eq("user_id",user.id).single();
+    if(st){setSett(p=>({...p,genderPref:st.gender_pref||p.genderPref,speechRate:st.speech_rate||p.speechRate,speechPitch:st.speech_pitch||p.speechPitch,loopGap:st.loop_gap||p.loopGap,breathingEnabled:st.breathing_enabled??true,breathingPattern:st.breathing_pattern??0,elevenLabsVoiceId:st.elevenlabs_voice_id||"",elevenLabsVoiceName:st.elevenlabs_voice_name||"",skipEnergyCheckin:st.skip_energy_checkin??false,skipOnboarding:st.skip_onboarding??false}));
+      if(st.elevenlabs_api_key){setElKey(st.elevenlabs_api_key);ss("elkey",st.elevenlabs_api_key)}}
+    else if(!sett.skipOnboarding)setVw("onboarding");
+  })()},[sb,user]);
+
+  async function saveSett(ns){setSett(ns);if(!sb||!user)return;await sb.from("user_settings").upsert({user_id:user.id,gender_pref:ns.genderPref,speech_rate:ns.speechRate,speech_pitch:ns.speechPitch,loop_gap:ns.loopGap,breathing_enabled:ns.breathingEnabled,breathing_pattern:ns.breathingPattern,elevenlabs_voice_id:ns.elevenLabsVoiceId,elevenlabs_voice_name:ns.elevenLabsVoiceName,skip_energy_checkin:ns.skipEnergyCheckin,skip_onboarding:ns.skipOnboarding,elevenlabs_api_key:elKey,updated_at:new Date().toISOString()})}
+  async function saveElKey(k){setElKey(k);ss("elkey",k);if(!sb||!user)return;await sb.from("user_settings").upsert({user_id:user.id,elevenlabs_api_key:k,updated_at:new Date().toISOString()})}
+  async function saveSc(f){if(!sb||!user)return;if(f.id){const{data}=await sb.from("scripts").update({title:f.title,category:f.category,content:f.content,updated_at:new Date().toISOString()}).eq("id",f.id).select().single();if(data)setSc(p=>p.map(x=>x.id===data.id?data:x))}else{const{data}=await sb.from("scripts").insert({user_id:user.id,title:f.title,category:f.category,content:f.content}).select().single();if(data)setSc(p=>[data,...p])}setVw("library")}
+  async function delSc(id){await sb.from("scripts").delete().eq("id",id);setSc(p=>p.filter(x=>x.id!==id))}
+  async function saveAf(f){if(!sb||!user)return;if(f.id){const{data}=await sb.from("affirmations").update({title:f.title,content:f.content,updated_at:new Date().toISOString()}).eq("id",f.id).select().single();if(data)setAf(p=>p.map(x=>x.id===data.id?data:x))}else{const{data}=await sb.from("affirmations").insert({user_id:user.id,title:f.title,content:f.content}).select().single();if(data)setAf(p=>[data,...p])}setVw("library")}
+  async function delAf(id){await sb.from("affirmations").delete().eq("id",id);setAf(p=>p.filter(x=>x.id!==id))}
+  async function logSess(title,min,energy){if(!sb||!user||min<1)return;const{data}=await sb.from("sessions").insert({user_id:user.id,date:new Date().toISOString().split("T")[0],minutes:min,script_title:title,session_mode:timeMode(),energy_before:energy||null}).select().single();if(data)setSe(p=>[data,...p])}
+  async function saveBp(domain,vision){if(!sb||!user)return;const{data}=await sb.from("reality_blueprint").upsert({user_id:user.id,domain,vision,updated_at:new Date().toISOString()},{onConflict:"user_id,domain"}).select().single();if(data)setBp(p=>({...p,[domain]:data}))}
+  async function addEvidence(text,cat){if(!sb||!user||!text.trim())return;const{data}=await sb.from("evidence_journal").insert({user_id:user.id,entry_text:text,category:cat||"general",entry_date:new Date().toISOString().split("T")[0]}).select().single();if(data)setEv(p=>[data,...p])}
+  async function delEvidence(id){await sb.from("evidence_journal").delete().eq("id",id);setEv(p=>p.filter(x=>x.id!==id))}
+
+  // ElevenLabs
+  async function fetchVc(){if(!elKey)return;setVL(true);try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":elKey}});const d=await r.json();setVoices(d.voices||[])}catch{}setVL(false)}
+  function buildSentences(text,al){
+    if(!al||!al.characters)return[];
+    const fullText=al.characters.join("");const starts=al.character_start_times_seconds;const ends=al.character_end_times_seconds;
+    const sents=[];let cur="",sIdx=0;
+    for(let i=0;i<fullText.length;i++){
+      cur+=fullText[i];
+      if(fullText[i]==="."||fullText[i]==="!"||fullText[i]==="?"||i===fullText.length-1){
+        const trimmed=cur.trim();
+        if(trimmed.length>3){sents.push({text:trimmed,start:starts[sIdx],end:ends[i]})}
+        cur="";sIdx=i+1;
+      }
+    }
+    if(sents.length===0&&fullText.trim()){sents.push({text:fullText.trim(),start:starts[0],end:ends[ends.length-1]})}
+    return sents;
+  }
+  async function genAudio(text,sid){const vid=sett.elevenLabsVoiceId;if(!elKey||!vid)return null;const cl=prep(text);const ch=hash(cl+vid);
+    if(sb&&user){const{data:c}=await sb.from("audio_cache").select("storage_path,alignment_data").eq("script_id",sid).eq("content_hash",ch).eq("voice_id",vid).single();
+      if(c){const{data:dl}=await sb.storage.from("audio-cache").download(c.storage_path);
+        if(dl){const al=c.alignment_data?JSON.parse(c.alignment_data):null;return{url:URL.createObjectURL(dl),alignment:al}}}}
+    const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid+"/with-timestamps",{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:cl,model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75,style:0.4}})});
+    if(!r.ok)return null;const json=await r.json();
+    const audioBytes=Uint8Array.from(atob(json.audio_base64),c=>c.charCodeAt(0));
+    const blob=new Blob([audioBytes],{type:"audio/mpeg"});
+    const al=json.alignment||null;
+    if(sb&&user){const path=user.id+"/"+ch+".mp3";await sb.storage.from("audio-cache").upload(path,blob,{contentType:"audio/mpeg",upsert:true});
+      await sb.from("audio_cache").upsert({user_id:user.id,script_id:sid,content_hash:ch,voice_id:vid,storage_path:path,alignment_data:al?JSON.stringify(al):null})}
+    return{url:URL.createObjectURL(blob),alignment:al}}
+
+  // Tone.js
+  async function enT(){if(!tOk.current){await Tone.start();Tone.Transport.start();tOk.current=true}if(!mG.current)mG.current=new Tone.Gain(1).toDestination();if(Tone.context.state!=="running")await Tone.context.resume();if(Tone.Transport.state!=="started")Tone.Transport.start()}
+  function startSnd(){const mg=mG.current;if(!mg)return;const s=ss2R.current;
+    if(s.ambient>0&&!ambR.current){
+      const dl=new Tone.FeedbackDelay({delayTime:0.8,feedback:0.4,wet:0.5}).connect(mg);
+      const sy=new Tone.PolySynth(Tone.Synth,{oscillator:{type:"sine"},envelope:{attack:4,decay:3,sustain:0.8,release:5},volume:-16}).connect(dl);
+      const chords=[["C3","E3","G3","B3"],["A2","C3","E3","G3"],["F2","A2","C3","E3"],["D3","F3","A3","C4"]];
+      const lp=new Tone.Loop(()=>{try{sy.triggerAttackRelease(chords[Math.floor(Math.random()*chords.length)],"4n")}catch{}},8);
+      lp.start();ambR.current={sy,dl,lp}}
+    if(ambR.current)ambR.current.sy.volume.value=-16+(s.ambient*16);
+    if(s.harp>0&&!hpR.current){
+      const sy=new Tone.Synth({oscillator:{type:"triangle"},envelope:{attack:0.01,decay:1.5,sustain:0,release:1},volume:-12}).connect(mg);
+      const notes=["C4","D4","E4","G4","A4","C5","D5","E5","G5","A5"];
+      const lp=new Tone.Loop(()=>{try{sy.triggerAttackRelease(notes[Math.floor(Math.random()*notes.length)],"8n")}catch{}},2);
+      lp.start();hpR.current={sy,lp}}
+    if(hpR.current)hpR.current.sy.volume.value=-12+(s.harp*12);
+    if(s.rain>0&&!rnR.current){const f=new Tone.Filter(600,"lowpass").connect(mg);const n=new Tone.Noise("pink").connect(f);n.volume.value=-20;n.start();rnR.current=n;rnF.current=f}
+    if(rnR.current)rnR.current.volume.value=-20+(s.rain*14);
+    if(s.binaural>0&&!bL.current){const p=BIN[binP];const pL=new Tone.Panner(-1).connect(mg);const pR=new Tone.Panner(1).connect(mg);const oL=new Tone.Oscillator(p.b,"sine").connect(pL);const oR=new Tone.Oscillator(p.b+p.hz,"sine").connect(pR);oL.volume.value=-22;oR.volume.value=-22;oL.start();oR.start();bL.current=oL;bR.current=oR;bPL.current=pL;bPR.current=pR}
+    if(bL.current){const v=-22+(s.binaural*16);bL.current.volume.value=v;bR.current.volume.value=v}
+    if(s.solfeggio>0&&!sO.current){const o=new Tone.Oscillator(SOL[solP].f,"sine").connect(mg);o.volume.value=-26;o.start();sO.current=o}
+    if(sO.current)sO.current.volume.value=-26+(s.solfeggio*14)}
+  function stopSnd(){if(ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}if(hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}if(rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}if(bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}if(sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
+  function killLayer(name){
+    if(name==="ambient"&&ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}
+    if(name==="harp"&&hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}
+    if(name==="rain"&&rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}
+    if(name==="binaural"&&bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}
+    if(name==="solfeggio"&&sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
+  useEffect(()=>{if(!playing&&!showSS)return;(async()=>{await enT();startSnd()})();
+    if(ss2.ambient===0)killLayer("ambient");if(ss2.harp===0)killLayer("harp");if(ss2.rain===0)killLayer("rain");
+    if(ss2.binaural===0)killLayer("binaural");if(ss2.solfeggio===0)killLayer("solfeggio")},[ss2]);
+
+  function doBr(){return new Promise(res=>{const p=BRTH[sett.breathingPattern];let cy=0;
+    const go=()=>{if(cy>=3||!plR.current){res();return}setBrPh("Breathe In");setBrCt(p.i);let cd=p.i;
+      const ii=setInterval(()=>{cd--;setBrCt(cd);if(cd<=0){clearInterval(ii);if(p.h>0){setBrPh("Hold");setBrCt(p.h);let hc=p.h;const hi=setInterval(()=>{hc--;setBrCt(hc);if(hc<=0){clearInterval(hi);doEx()}},1000)}else doEx()}},1000);
+      const doEx=()=>{setBrPh("Breathe Out");setBrCt(p.e);let ec=p.e;const ei=setInterval(()=>{ec--;setBrCt(ec);if(ec<=0){clearInterval(ei);cy++;if(p.h2>0){setBrPh("Hold");setBrCt(p.h2);let h2=p.h2;const h2i=setInterval(()=>{h2--;setBrCt(h2);if(h2<=0){clearInterval(h2i);go()}},1000)}else go()}},1000)}};go()})}
+
+  async function startPlay(scr,affM=false){await enT();plR.current=true;paR.current=false;setPlaying(true);setPaused(false);setCur(scr);setIsAff(affM);seS.current=Date.now();startSnd();
+    // Energy check-in
+    if(!sett.skipEnergyCheckin&&!affM){setEP(true);return}
+    continuePlay(scr,affM)}
+  function continuePlay(scr,affM){
+    setEP(false);
+    if(sett.breathingEnabled&&!affM){setBrAct(true);doBr().then(()=>{setBrAct(false);beginAudio(scr,affM)})}
+    else beginAudio(scr,affM)}
+  function skipToPlay(){setEP(false);beginAudio(cur,isAff)}
+  function beginAudio(scr,affM){
+    if(slpM>0){const end=Date.now()+slpM*60000;setTLeft(slpM*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}
+    if(elKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(result=>{setALd(false);if(result&&result.url&&plR.current){
+      if(result.alignment){setAlignment(result.alignment);setSentences(buildSentences(scr.content,result.alignment))}
+      const a=new Audio(result.url);auE.current=a;a.loop=loopOn;
+      a.onloadedmetadata=()=>{setAudioDur(a.duration||0)};
+      a.ontimeupdate=()=>{setCurTime(a.currentTime);if(a.duration&&!audioDur)setAudioDur(a.duration)};
+      a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;setCurTime(0);a.play()}},sett.loopGap*1000);else stopPlay(true)};
+      if(!paR.current){a.play()}else{setPaused(true)}}}).catch(()=>{setALd(false);fbTTS(scr)})}
+    else fbTTS(scr)}
+  function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
+  function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
+  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);setAudioDur(0);setShowSS(false);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
+    if(log&&seS.current){const dur=Math.round((Date.now()-seS.current)/60000);logSess(cur?.title||"Session",dur,energyChoice)}}
+
+  // ═══ VIEWS ═══
+  function AuthVw(){const[em,sE]=useState("");const[pw,sP]=useState("");const[up,sU]=useState(false);const[ld,sL]=useState(false);const[er,sEr]=useState("");
+    const go=async()=>{if(!sb)return;sL(true);sEr("");const{error}=up?await sb.auth.signUp({email:em,password:pw}):await sb.auth.signInWithPassword({email:em,password:pw});if(error)sEr(error.message);sL(false)};
+    return<div className="fi" style={{padding:22,maxWidth:380,margin:"0 auto"}}><div style={{textAlign:"center",marginTop:80,marginBottom:40}}><div style={{marginBottom:10}}><Logo size={50}/></div><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:34,fontWeight:500,letterSpacing:2,color:P.ac}}>Reality Portal</h1><p style={{color:P.mt,fontSize:13,marginTop:8,fontFamily:"'Nunito',sans-serif"}}>Select Your New Reality</p></div>
+      <Cd><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18,margin:"0 0 16px"}}>{up?"Create Account":"Welcome Back"}</h3><div style={{marginBottom:12}}><GI value={em} onChange={e=>sE(e.target.value)} placeholder="Email" type="email"/></div><div style={{marginBottom:16}}><GI value={pw} onChange={e=>sP(e.target.value)} placeholder="Password" type="password"/></div>
+        {er&&<p style={{fontSize:12,color:P.rd,marginBottom:12}}>{er}</p>}
+        <Bt onClick={go} ld={ld} disabled={!em||!pw} style={{width:"100%",marginBottom:12}}>{up?"Sign Up":"Sign In"}</Bt>
+        <button onClick={()=>{sU(!up);sEr("")}} style={{background:"none",border:"none",color:P.ac,fontSize:13,cursor:"pointer",width:"100%",textAlign:"center"}}>{up?"Have an account? Sign in":"New? Create account"}</button></Cd>
+      </div>}
+
+  // ONBOARDING
+  function OnboardVw(){return<div className="fi" style={{padding:22,maxWidth:440,margin:"0 auto",textAlign:"center"}}>
+    <div style={{marginTop:60,marginBottom:30}}><div style={{marginBottom:16}}><Logo size={70}/></div>
+      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:500,letterSpacing:1.5,color:P.ac}}>Welcome to Reality Portal</h1></div>
+    <p style={{color:P.tx,fontSize:15,lineHeight:1.8,marginBottom:20}}>Reality is not fixed. It is a field that responds to your energy signature. The physical world reorganizes itself around the dominant energy you consistently hold.</p>
+    <Cd style={{textAlign:"left",marginBottom:16}}><p style={{fontSize:13,color:P.gd,fontWeight:600,marginBottom:8}}>This app is your immersion system to:</p>
+      <p style={{fontSize:13,color:P.tx,lineHeight:1.8,margin:0}}>1. <strong>Design</strong> your new reality in vivid detail<br/>2. <strong>Step into</strong> it through visualization and declaration<br/>3. <strong>Hold the ground</strong> with daily practice<br/>4. <strong>Let the 3D catch up</strong> — it always does</p></Cd>
+    <p style={{fontSize:13,color:P.mt,lineHeight:1.7,marginBottom:24,fontStyle:"italic"}}>"As a man thinks in his heart, so is he."<br/>Your heart is your broadcast tower. What you hold there, you manifest.</p>
+    <Bt v="gold" onClick={()=>{saveSett({...sett,skipOnboarding:true});setVw("library")}} style={{width:"100%",fontSize:16,padding:14}}>Enter the Portal</Bt></div>}
+
+  // LIBRARY
+  function LibVw(){const tm=timeMode();const catColors={Wealth:"rgba(140,110,230",Health:"rgba(90,190,140",Identity:"rgba(90,190,190",Relationships:"rgba(220,130,170",Career:"rgba(200,170,100",Spiritual:"rgba(180,160,255",Custom:"rgba(140,110,230"};
+    const MiniPortal=({color})=><svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="17" fill="none" stroke={color+",0.1)"} strokeWidth="0.5"/><circle cx="19" cy="19" r="12" fill="none" stroke={color+",0.15)"} strokeWidth="0.5"/><circle cx="19" cy="19" r="7" fill={color+",0.08)"}/><circle cx="19" cy="19" r="2.5" fill={color+",0.3)"}/></svg>;
+    return<div className="fi">
+    <div style={{textAlign:"center",padding:"24px 22px 0",position:"relative"}}>
+      <div style={{position:"relative",display:"inline-block",marginBottom:4}}>
+        <svg width="160" height="160" viewBox="0 0 160 160" style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)"}}>
+          <circle cx="80" cy="80" r="75" fill="none" stroke="rgba(140,110,230,0.06)" strokeWidth="0.5" style={{animation:"ringPulse2 6s ease-in-out infinite"}}/>
+          <circle cx="80" cy="80" r="62" fill="none" stroke="rgba(140,110,230,0.08)" strokeWidth="0.5" style={{animation:"ringPulse 5s ease-in-out 0.5s infinite"}}/>
+          <circle cx="80" cy="80" r="48" fill="none" stroke="rgba(140,110,230,0.1)" strokeWidth="0.8" style={{animation:"ringPulse 4s ease-in-out 1s infinite"}}/>
+          <circle cx="80" cy="80" r="34" fill="none" stroke="rgba(140,110,230,0.14)" strokeWidth="0.8" style={{animation:"ringPulse3 3.5s ease-in-out infinite"}}/>
+        </svg>
+        <div style={{padding:"36px 0"}}><Logo size={60}/></div>
+      </div>
+      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:28,fontWeight:500,letterSpacing:1.5,color:P.ac,margin:0}}>Reality Portal</h1>
+      <p style={{color:P.mt,fontSize:12,marginTop:4,fontFamily:"'Nunito',sans-serif"}}>Select Your New Reality {tm==="night"?"· Night Session":"· "+tm.charAt(0).toUpperCase()+tm.slice(1)+" Session"}</p>
+    </div>
+    <div style={{padding:"14px 22px"}}>
+      <div style={{display:"flex",gap:8,marginBottom:14}}><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:""});setVw("editor")}} style={{flex:1}}>+ Script</Bt><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:PHASE_TEMPLATE});setVw("editor")}} v="gold" style={{flex:1,fontSize:12}}>+ Guided 4-Phase</Bt></div>
+      <Bt v="secondary" onClick={()=>{setEdAf({title:"",content:""});setVw("affEditor")}} style={{width:"100%",marginBottom:16}}>+ Affirmation Set</Bt>
+      {scripts.length===0&&affs.length<=1&&<Cd style={{textAlign:"center",padding:30,marginBottom:14}}><p style={{color:P.mt,fontSize:13,lineHeight:1.7,fontFamily:"'Nunito',sans-serif"}}>Your portal awaits. Create your first visualization script to begin occupying your new reality.</p></Cd>}
+      {scripts.length>0&&<>
+        <p style={{fontSize:11,color:P.gd,margin:"0 0 10px",letterSpacing:0.8,fontFamily:"'Nunito',sans-serif"}}>Select which scene you would like to step into</p>
+        {scripts.map(s=>{const cc=catColors[s.category]||catColors.Custom;return<Cd key={s.id} style={{marginBottom:8,padding:14,display:"flex",alignItems:"center",gap:12}} onClick={()=>{setCur(s);setIsAff(false);setVw("player")}}>
+          <MiniPortal color={cc}/>
+          <div style={{flex:1}}><h4 style={{margin:0,fontSize:14,fontWeight:600,fontFamily:"'Nunito',sans-serif"}}>{s.title}</h4>
+            <p style={{margin:"3px 0 0",fontSize:10,color:cc+",0.5)",fontFamily:"'Nunito',sans-serif"}}>{s.category} · ~{Math.ceil((s.content||"").split(" ").length/130)} min</p></div>
+          <div style={{display:"flex",gap:6,alignItems:"center"}}>
+            <button onClick={e=>{e.stopPropagation();setEdSc({...s});setVw("editor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:13}}>✎</button>
+            <button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delSc(s.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:11,opacity:0.5}}>✕</button>
+            <div style={{width:30,height:30,borderRadius:"50%",background:"rgba(180,40,40,0.1)",border:"1px solid rgba(180,40,40,0.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(200,100,100,0.7)",fontSize:11}}>▶</div>
+          </div></Cd>})}
+      </>}
+      {affs.length>0&&<><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,margin:"16px 0 10px",color:P.tl}}>Declarations & Affirmations</h3>
+        {affs.map(a=><Cd key={a.id} style={{marginBottom:8}} onClick={()=>{setCur(a);setIsAff(true);setVw("player")}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h4 style={{margin:0,fontSize:14,fontWeight:600,fontFamily:"'Nunito',sans-serif"}}>{a.title}</h4><span style={{fontSize:10,color:P.mt,fontFamily:"'Nunito',sans-serif"}}>{(a.content||"").split("\n").filter(l=>l.trim()).length} declarations</span></div>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              <button onClick={e=>{e.stopPropagation();setEdAf({...a});setVw("affEditor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:13}}>✎</button>
+              <button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delAf(a.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:11,opacity:0.5}}>✕</button>
+              <div style={{width:30,height:30,borderRadius:"50%",background:"rgba(180,40,40,0.1)",border:"1px solid rgba(180,40,40,0.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(200,100,100,0.7)",fontSize:11}}>▶</div>
+            </div></div></Cd>)}</>}
+    </div></div>}
+
+  // EDITOR
+  function EdVw(){const[f,sF]=useState(edSc||{title:"",category:"Wealth",content:""});const isN=!f.id;const[showSc,setSS]=useState(false);
+    const conv=()=>{let t=f.content;t=t.replace(/\byou are\b/gi,"I am");t=t.replace(/\byour\b/gi,"my");t=t.replace(/\byou\b/gi,"I");sF(p=>({...p,content:t}))};
+    const insertSc=(s)=>{sF(p=>({...p,content:p.content+"\n\n[pause 3s]\n\n"+s.ref+": "+s.text+"\n\n[pause 5s]"}));setSS(false)};
+    return<div className="fi" style={{padding:22}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}><Back onClick={()=>setVw("library")}/><h2 style={{fontFamily:"'Cormorant Garamond',serif",margin:0,fontSize:20}}>{isN?"New Script":"Edit Script"}</h2><div style={{width:50}}/></div>
+      <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>Title</label><GI value={f.title} onChange={e=>sF(p=>({...p,title:e.target.value}))} placeholder="My Visualization"/></div>
+      <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>Category</label><div style={{display:"flex",flexWrap:"wrap",gap:5}}>{CATS.map(c=><button key={c} onClick={()=>sF(p=>({...p,category:c}))} style={{padding:"5px 12px",borderRadius:20,border:"1px solid "+(f.category===c?P.ac:P.gb),background:f.category===c?"rgba(140,110,230,0.15)":"transparent",color:f.category===c?P.ac:P.mt,fontSize:11,cursor:"pointer"}}>{c}</button>)}</div></div>
+      <div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4,flexWrap:"wrap",gap:4}}>
+        <label style={{fontSize:11,color:P.mt}}>Content</label>
+        <div style={{display:"flex",gap:4}}><button onClick={conv} style={{background:P.glass,border:"1px solid "+P.gb,color:P.tl,padding:"2px 8px",borderRadius:6,fontSize:10,cursor:"pointer"}}>1st Person</button>
+          <button onClick={()=>setSS(!showSc)} style={{background:P.glass,border:"1px solid "+P.gb,color:P.gd,padding:"2px 8px",borderRadius:6,fontSize:10,cursor:"pointer"}}>+ Scripture</button>
+          <button onClick={()=>sF(p=>({...p,content:PHASE_TEMPLATE}))} style={{background:P.glass,border:"1px solid "+P.gb,color:P.ac,padding:"2px 8px",borderRadius:6,fontSize:10,cursor:"pointer"}}>4-Phase Template</button></div></div>
+        {showSc&&<div style={{maxHeight:200,overflow:"auto",marginBottom:8,border:"1px solid "+P.gb,borderRadius:12,padding:8,background:P.glass}}>
+          {SCRIPTURES.map((s,i)=><div key={i} onClick={()=>insertSc(s)} style={{padding:"8px",borderRadius:8,cursor:"pointer",marginBottom:4,background:"rgba(200,170,100,0.05)",border:"1px solid rgba(200,170,100,0.1)"}}>
+            <p style={{margin:0,fontSize:12,color:P.gd,fontWeight:600}}>{s.ref}</p><p style={{margin:"2px 0 0",fontSize:10,color:P.mt,lineHeight:1.4}}>{s.text.substring(0,80)}...</p></div>)}</div>}
+        <textarea value={f.content} onChange={e=>sF(p=>({...p,content:e.target.value}))} placeholder={"Use [PHASE 1 — GROUNDING] headers...\nUse [pause 5s] for pauses..."} style={{width:"100%",minHeight:220,padding:12,borderRadius:12,border:"1px solid "+P.gb,background:P.glass,color:P.tx,fontSize:13,lineHeight:1.7,resize:"vertical"}}/></div>
+      <div style={{display:"flex",gap:8}}><Bt onClick={()=>saveSc(f)} style={{flex:1}} disabled={!f.title.trim()||!f.content.trim()}>Save</Bt><Bt v="secondary" onClick={()=>setVw("library")}>Cancel</Bt></div></div>}
+
+  function AffEdVw(){const[f,sF]=useState(edAf||{title:"",content:""});
+    return<div className="fi" style={{padding:22}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}><Back onClick={()=>setVw("library")}/><h2 style={{fontFamily:"'Cormorant Garamond',serif",margin:0,fontSize:20}}>{!f.id?"New Declarations":"Edit"}</h2><div style={{width:50}}/></div>
+      <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>Title</label><GI value={f.title} onChange={e=>sF(p=>({...p,title:e.target.value}))} placeholder="Morning Declarations"/></div>
+      <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>One per line</label><textarea value={f.content} onChange={e=>sF(p=>({...p,content:e.target.value}))} placeholder={"I am a powerful creator of my reality\nReality responds to me..."} style={{width:"100%",minHeight:200,padding:12,borderRadius:12,border:"1px solid "+P.gb,background:P.glass,color:P.tx,fontSize:13,lineHeight:1.8,resize:"vertical"}}/></div>
+      <div style={{display:"flex",gap:8}}><Bt onClick={()=>saveAf(f)} style={{flex:1}} disabled={!f.title.trim()||!f.content.trim()}>Save</Bt><Bt v="secondary" onClick={()=>setVw("library")}>Cancel</Bt></div></div>}
+
+  // BLUEPRINT
+  function BpVw(){const[sel,setSel]=useState(null);const[txt,setTxt]=useState("");
+    const edit=(d)=>{setSel(d);setTxt(blueprint[d]?.vision||"")};
+    const save=async()=>{if(sel)await saveBp(sel,txt);setSel(null)};
+    return<div className="fi" style={{padding:22}}><Hd text="Reality Blueprint"/>
+      <p style={{color:P.mt,fontSize:13,lineHeight:1.6,marginBottom:20}}>Design your new reality in vivid detail across every domain. This is Step 1 — see it completely before it manifests.</p>
+      {sel?<div><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><Back onClick={()=>setSel(null)}/><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18,color:P.gd,margin:0}}>{sel}</h3><div style={{width:50}}/></div>
+        <p style={{fontSize:11,color:P.mt,marginBottom:8}}>Describe your completed reality in this area. Be specific. Inhabit it as you write — first person, present tense.</p>
+        <textarea value={txt} onChange={e=>setTxt(e.target.value)} placeholder="I am living in... I have... I feel... Every day I..." style={{width:"100%",minHeight:200,padding:12,borderRadius:12,border:"1px solid "+P.gb,background:P.glass,color:P.tx,fontSize:14,lineHeight:1.8,resize:"vertical"}}/>
+        <Bt onClick={save} style={{width:"100%",marginTop:12}}>Save Vision</Bt></div>
+      :BP_DOMAINS.map(d=><Cd key={d} style={{marginBottom:8,cursor:"pointer"}} onClick={()=>edit(d)}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h4 style={{margin:0,fontSize:14,fontWeight:600}}>{d}</h4>
+          {blueprint[d]?<p style={{fontSize:11,color:P.mt,marginTop:4,lineHeight:1.4}}>{blueprint[d].vision.substring(0,80)}...</p>:<p style={{fontSize:11,color:"rgba(200,170,100,0.4)",marginTop:4,fontStyle:"italic"}}>Tap to design this reality</p>}</div>
+          <span style={{color:blueprint[d]?P.ac:P.gd,fontSize:14}}>{blueprint[d]?"✎":"+"}</span></div></Cd>)}</div>}
+
+  // EVIDENCE JOURNAL
+  function EvVw(){const[txt,setTxt]=useState("");const[cat,setCat]=useState("general");
+    return<div className="fi" style={{padding:22}}><Hd text="3D Evidence Journal"/>
+      <p style={{color:P.mt,fontSize:13,lineHeight:1.6,marginBottom:16}}>Log every sign, synchronicity, and shift. The 3D is catching up — document the evidence.</p>
+      <Cd style={{marginBottom:16}}><textarea value={txt} onChange={e=>setTxt(e.target.value)} placeholder="What shifted? What appeared? What confirmed your new reality?" style={{width:"100%",minHeight:60,padding:10,borderRadius:10,border:"1px solid "+P.gb,background:"transparent",color:P.tx,fontSize:13,lineHeight:1.6,resize:"none"}}/>
+        <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{["general","financial","relationship","health","career","spiritual"].map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"3px 10px",borderRadius:12,fontSize:10,cursor:"pointer",border:"1px solid "+(cat===c?P.gd:P.gb),background:cat===c?"rgba(200,170,100,0.12)":"transparent",color:cat===c?P.gd:P.mt,textTransform:"capitalize"}}>{c}</button>)}</div>
+        <Bt onClick={()=>{addEvidence(txt,cat);setTxt("")}} disabled={!txt.trim()} style={{width:"100%",marginTop:10}}>Log Evidence</Bt></Cd>
+      {evidence.length===0&&<p style={{textAlign:"center",color:P.mt,fontSize:13,fontStyle:"italic",marginTop:20}}>No evidence logged yet. Stay in your new reality — the signs will come.</p>}
+      {evidence.map(e=><Cd key={e.id} style={{marginBottom:6,padding:14}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{flex:1}}><p style={{margin:0,fontSize:13,lineHeight:1.5}}>{e.entry_text}</p>
+          <div style={{display:"flex",gap:8,marginTop:6}}><span style={{fontSize:10,color:P.gd,textTransform:"capitalize"}}>{e.category}</span><span style={{fontSize:10,color:P.mt}}>{e.entry_date}</span></div></div>
+          <button onClick={()=>delEvidence(e.id)} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:11,opacity:0.5}}>✕</button></div></Cd>)}</div>}
+
+  // OCCUPATION LOG
+  function LogVw(){const today=new Date();const ts=today.toISOString().split("T")[0];const l30=[];for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);l30.push(d.toISOString().split("T")[0])}
+    const dates=new Set(sessions.map(s=>s.date));const streak=(()=>{let c=0;for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(dates.has(d.toISOString().split("T")[0]))c++;else break}return c})();const tot=sessions.reduce((a,s)=>a+s.minutes,0);
+    return<div className="fi" style={{padding:22}}><Hd text="Occupation Log"/>
+      <p style={{color:P.mt,fontSize:12,marginBottom:16}}>Hold the ground. Every session is an act of occupation.</p>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:22}}>
+        <Cd style={{textAlign:"center",padding:14}}><div style={{fontSize:26,fontWeight:700,color:P.ac}}>{streak}</div><div style={{fontSize:9,color:P.mt}}>Days Holding</div></Cd>
+        <Cd style={{textAlign:"center",padding:14}}><div style={{fontSize:26,fontWeight:700,color:P.tl}}>{sessions.length}</div><div style={{fontSize:9,color:P.mt}}>Times Occupied</div></Cd>
+        <Cd style={{textAlign:"center",padding:14}}><div style={{fontSize:26,fontWeight:700}}>{tot}</div><div style={{fontSize:9,color:P.mt}}>Minutes</div></Cd></div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:22}}>{l30.map(d=><div key={d} title={d} style={{aspectRatio:"1",borderRadius:4,background:dates.has(d)?P.ac:"rgba(140,110,230,0.08)",opacity:dates.has(d)?1:0.3,border:d===ts?"2px solid "+P.ac:"1px solid transparent"}}/>)}</div>
+      {sessions.slice(0,10).map(s=><div key={s.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid "+P.gb,fontSize:12}}><span>{s.script_title}</span><div><span style={{color:P.mt}}>{s.date}</span><span style={{color:P.ac,marginLeft:10}}>{s.minutes}m</span>{s.energy_before&&<span style={{color:P.gd,marginLeft:6}}>{s.energy_before}</span>}</div></div>)}</div>}
+
+  // PLAYER (with energy check-in)
+  function PlayerVw(){
+    // Energy check-in overlay
+    if(energyPhase)return<div className="fi" style={{height:"100vh",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:30,textAlign:"center"}}>
+      <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,marginBottom:8}}>Before we begin</h2>
+      <p style={{color:P.mt,fontSize:14,marginBottom:24}}>What energy are you broadcasting right now?</p>
+      <div style={{display:"flex",gap:12,marginBottom:30,flexWrap:"wrap",justifyContent:"center"}}>
+        <Cd onClick={()=>{setEC("love");continuePlay(cur,isAff)}} style={{padding:"20px 24px",cursor:"pointer",border:"1px solid rgba(90,190,190,0.2)",minWidth:130,textAlign:"center"}}>
+          <div style={{marginBottom:6}}><Logo size={22}/></div><p style={{margin:0,fontSize:14,color:P.tl,fontWeight:600}}>Love · Faith</p><p style={{margin:"4px 0 0",fontSize:11,color:P.mt}}>Peace · Certainty</p></Cd>
+        <Cd onClick={()=>{setEC("fear");continuePlay(cur,isAff)}} style={{padding:"20px 24px",cursor:"pointer",border:"1px solid rgba(196,92,92,0.15)",minWidth:130,textAlign:"center"}}>
+          <div style={{fontSize:28,marginBottom:6}}>⚡</div><p style={{margin:0,fontSize:14,color:P.rd,fontWeight:600}}>Fear · Doubt</p><p style={{margin:"4px 0 0",fontSize:11,color:P.mt}}>Anxiety · Worry</p></Cd></div>
+      <button onClick={skipToPlay} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:13}}>Skip this step →</button></div>;
+
+    // Breathing overlay
+    if(brAct)return<div style={{height:"100vh",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",background:"rgba(4,6,16,0.96)"}}><div style={{width:180,height:180,borderRadius:"50%",border:"2px solid rgba(140,110,230,0.2)",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",animation:brPh==="Breathe In"?"pulseGrow 4s ease-in-out":brPh==="Breathe Out"?"pulseShrink 4s ease-in-out":"none",boxShadow:"0 0 80px rgba(140,110,230,0.15)"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,color:P.ac}}>{brPh}</span><span style={{fontSize:40,fontWeight:300,marginTop:8}}>{brCt}</span></div>
+      <button onClick={()=>{setBrAct(false);beginAudio(cur,isAff)}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:12,marginTop:24}}>Skip breathing →</button></div>;
+
+    return<div style={{height:"100vh",display:"flex",flexDirection:"column",overflow:"auto",background:dimmed&&playing?"#020308":P.bg,transition:"background 2s",position:"relative"}}>
+      <svg width="100%" height="100%" viewBox="0 0 400 800" style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:0}} preserveAspectRatio="xMidYMid slice">
+        <circle cx="200" cy="280" r="350" fill="none" stroke="rgba(140,110,230,0.03)" strokeWidth="0.5" style={{animation:"ringPulse2 8s ease-in-out infinite"}}/>
+        <circle cx="200" cy="280" r="280" fill="none" stroke="rgba(140,110,230,0.04)" strokeWidth="0.5" style={{animation:"ringPulse 7s ease-in-out 0.5s infinite"}}/>
+        <circle cx="200" cy="280" r="210" fill="none" stroke="rgba(140,110,230,0.06)" strokeWidth="0.8" style={{animation:"ringPulse 6s ease-in-out 1s infinite"}}/>
+        <circle cx="200" cy="280" r="140" fill="none" stroke="rgba(140,110,230,0.08)" strokeWidth="0.8" style={{animation:"ringPulse3 5s ease-in-out infinite"}}/>
+        <circle cx="200" cy="280" r="80" fill="rgba(140,110,230,0.02)" stroke="rgba(140,110,230,0.1)" strokeWidth="0.8" style={{animation:"ringPulse3 4s ease-in-out infinite"}}/>
+      </svg>
+      <div style={{position:"relative",zIndex:1,padding:"20px 22px 0",opacity:dimmed&&playing?0.3:1,transition:"opacity 2s"}}><button onClick={()=>{if(playing)stopPlay(true);setVw("library");setIsAff(false)}} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14,fontFamily:"'Nunito',sans-serif"}}>← Library</button></div>
+      {cur&&<div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:22,textAlign:"center",opacity:dimmed&&playing?0.2:1,transition:"opacity 2s",position:"relative",zIndex:1}}>
+        {(!playing||sentences.length===0)&&<>
+        <div style={{marginBottom:20}}><Logo size={50}/></div>
+        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,letterSpacing:1}}>{cur.title}</h2></>}
+        {aLd&&<div style={{marginTop:14,textAlign:"center"}}><div style={{display:"inline-block",animation:"spin 2s linear infinite",marginBottom:8}}><Logo size={24}/></div><p style={{fontSize:14,color:P.ac,margin:0}}>Generating voice...</p><p style={{fontSize:11,color:P.mt,marginTop:4}}>This may take a moment for longer scripts</p></div>}
+        {playing&&!aLd&&sentences.length===0&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
+        {playing&&!aLd&&sentences.length>0&&(()=>{
+          const activeIdx=sentences.findIndex((s,i)=>curTime>=s.start&&curTime<s.end);
+          return<div style={{width:"100%",maxHeight:280,overflow:"hidden",position:"relative",margin:"0 auto"}}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:40,background:"linear-gradient(180deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,height:40,background:"linear-gradient(0deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{padding:"50px 0",display:"flex",flexDirection:"column",gap:12,transition:"transform 0.8s ease",transform:"translateY("+(-(Math.max(0,activeIdx-1))*44)+"px)"}}>
+            {sentences.map((s,i)=>{const active=i===activeIdx;const past=activeIdx>=0?i<activeIdx:curTime>=s.end;
+              return<p key={i} style={{margin:0,padding:"6px 12px",borderRadius:10,fontSize:active?17:14,minHeight:32,
+                fontFamily:"'Cormorant Garamond',serif",lineHeight:1.7,letterSpacing:0.3,transition:"all 0.6s ease",
+                color:active?"#fff":past?"rgba(160,140,200,0.2)":"rgba(160,140,200,0.4)",
+                fontWeight:active?500:400,
+                background:active?"rgba(140,110,230,0.1)":"transparent",
+                transform:active?"scale(1.02)":"scale(1)"}}>{s.text}</p>})}
+          </div>
+        </div>})()}
+        {playing&&!aLd&&sentences.length>0&&<p style={{fontSize:11,color:P.mt,marginTop:8,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
+        {playing&&!aLd&&audioDur>0&&<div style={{width:"100%",maxWidth:220,margin:"12px auto 0",opacity:0.55}}>
+          <div style={{width:"100%",height:2,background:"rgba(140,110,230,0.15)",borderRadius:1,overflow:"hidden"}}>
+            <div style={{width:(curTime/audioDur*100)+"%",height:"100%",background:"rgba(160,140,220,0.6)",borderRadius:1,transition:"width 0.3s linear"}}/></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}><span style={{fontSize:10,color:"rgba(180,165,220,0.6)",fontFamily:"monospace"}}>{fmt(Math.floor(curTime))}</span><span style={{fontSize:10,color:"rgba(180,165,220,0.6)",fontFamily:"monospace"}}>{fmt(Math.floor(audioDur))}</span></div></div>}
+        {tLeft!==null&&<div style={{marginTop:8,fontSize:14,color:P.mt,fontFamily:"monospace"}}>⏱ {fmt(tLeft)}</div>}</div>}
+      <div style={{padding:"0 22px 16px",opacity:dimmed&&playing?0.25:1,transition:"opacity 2s",position:"relative",zIndex:1}}>
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:24,marginBottom:18}}>
+          <button onClick={()=>setLoop(!loopOn)} style={{background:"none",border:"none",color:loopOn?P.ac:P.mt,cursor:"pointer",fontSize:20}}>🔁</button>
+          {!playing?<button onClick={()=>cur&&startPlay(cur,isAff)} disabled={!cur} style={{width:64,height:64,borderRadius:"50%",border:"none",background:"linear-gradient(135deg,rgba(180,40,40,0.8),rgba(140,20,20,0.9))",color:"rgba(255,200,200,0.9)",fontSize:24,cursor:"pointer",boxShadow:"0 0 40px rgba(180,40,40,0.2)"}}>▶</button>
+            :<div style={{display:"flex",gap:10,alignItems:"center"}}>
+              <button onClick={()=>{if(auE.current){auE.current.currentTime=Math.max(0,auE.current.currentTime-10);setCurTime(auE.current.currentTime)}}} style={{width:40,height:40,borderRadius:"50%",border:"1px solid rgba(140,110,230,0.15)",background:"transparent",color:"rgba(160,140,200,0.5)",fontSize:11,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:600}}>-10</button>
+              <button onClick={togPause} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(180,40,40,0.3)",background:"transparent",color:"rgba(200,120,120,0.7)",fontSize:18,cursor:"pointer"}}>{paused?"▶":"⏸"}</button>
+              <button onClick={()=>stopPlay(true)} style={{width:40,height:40,borderRadius:"50%",border:"2px solid rgba(196,92,92,0.2)",background:"transparent",color:P.rd,fontSize:14,cursor:"pointer"}}>⏹</button>
+              <button onClick={()=>{if(auE.current){auE.current.currentTime=Math.min(auE.current.duration||9999,auE.current.currentTime+10);setCurTime(auE.current.currentTime)}}} style={{width:40,height:40,borderRadius:"50%",border:"1px solid rgba(140,110,230,0.15)",background:"transparent",color:"rgba(160,140,200,0.5)",fontSize:11,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:600}}>+10</button>
+            </div>}
+          <button onClick={()=>setDim(!dimmed)} style={{background:"none",border:"none",color:dimmed?P.ac:P.mt,cursor:"pointer",fontSize:18}}>{dimmed?"☀":"🌑"}</button></div>
+        <div style={{marginBottom:14}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:6}}>Sleep Timer {tLeft!==null&&<span style={{color:P.ac,fontFamily:"monospace"}}> · {fmt(tLeft)} remaining</span>}</label><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+          {TIMERS.map(t=><button key={t} onClick={()=>{setSlpM(t);if(playing){if(tmR.current)clearInterval(tmR.current);const end=Date.now()+t*60000;setTLeft(t*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===t?P.ac:P.gb),background:slpM===t?"rgba(140,110,230,0.15)":"transparent",color:slpM===t?P.ac:P.mt}}>{t}m</button>)}
+          <button onClick={()=>{setSlpM(0);if(playing&&tmR.current){clearInterval(tmR.current);tmR.current=null;setTLeft(null);if(mG.current)mG.current.gain.value=1}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===0?P.tl:P.gb),background:slpM===0?"rgba(90,190,190,0.1)":"transparent",color:slpM===0?P.tl:P.mt}}>∞</button></div></div>
+        <Bt v="secondary" onClick={()=>{Tone.start();Tone.Transport.start();if(!mG.current)mG.current=new Tone.Gain(1).toDestination();tOk.current=true;setShowSS(true)}} style={{width:"100%",marginTop:4}}>🎵 Soundscape Mixer</Bt>
+      </div>
+      {showSS&&<div onClick={()=>setShowSS(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
+        <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"80vh",overflow:"auto",background:"#0d1228",borderRadius:"20px 20px 0 0",padding:"20px 22px 60px",border:"1px solid rgba(140,110,230,0.1)",borderBottom:"none"}}>
+          <div style={{width:40,height:4,background:"rgba(140,110,230,0.2)",borderRadius:2,margin:"0 auto 18px"}}/>
+          <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,color:P.ac,margin:"0 0 16px",textAlign:"center"}}>Soundscape Mixer</h3>
+          
+          <p style={{fontSize:11,color:P.gd,margin:"0 0 10px",letterSpacing:0.5}}>Presets</p>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:20}}>
+            {[{n:"Deep Space",v:{ambient:0.6,harp:0,rain:0,binaural:0.4,solfeggio:0.3}},
+              {n:"Gentle Rain",v:{ambient:0.3,harp:0,rain:0.8,binaural:0,solfeggio:0}},
+              {n:"Temple Harp",v:{ambient:0.2,harp:0.7,rain:0,binaural:0,solfeggio:0.3}},
+              {n:"Theta Waves",v:{ambient:0.3,harp:0,rain:0.3,binaural:0.7,solfeggio:0}},
+              {n:"Full Immersion",v:{ambient:0.5,harp:0.3,rain:0.4,binaural:0.3,solfeggio:0.3}},
+              {n:"Silent",v:{ambient:0,harp:0,rain:0,binaural:0,solfeggio:0}}
+            ].map(pr=><button key={pr.n} onClick={()=>{Tone.start();Tone.Transport.start();if(!mG.current)mG.current=new Tone.Gain(1).toDestination();tOk.current=true;stopSnd();ss2R.current=pr.v;setSs(pr.v);setTimeout(startSnd,300)}}
+              style={{padding:"8px 14px",borderRadius:12,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",
+                border:"1px solid rgba(140,110,230,0.12)",background:"rgba(140,110,230,0.06)",color:"rgba(200,180,255,0.7)"}}>{pr.n}</button>)}
+          </div>
+
+          {[{k:"ambient",n:"Ambient Pad",ic:"🌊"},{k:"harp",n:"Harp",ic:"🎵"},{k:"rain",n:"Rain",ic:"🌧"},{k:"binaural",n:"Binaural Beats",ic:"🧠"},{k:"solfeggio",n:"Solfeggio Tone",ic:"🔔"}].map(layer=>(
+            <div key={layer.k} style={{marginBottom:14}}>
+              <p style={{fontSize:13,color:P.mt,margin:"0 0 6px"}}>{layer.ic} {layer.n}</p>
+              <div style={{display:"flex",gap:6}}>
+                {[{l:"Off",v:0},{l:"Low",v:0.3},{l:"Med",v:0.6},{l:"High",v:0.9}].map(lv=>{
+                  const cur=ss2[layer.k];const active=lv.v===0?cur===0:Math.abs(cur-lv.v)<0.15;
+                  return<button key={lv.l} onClick={()=>{Tone.start();Tone.Transport.start();if(!mG.current)mG.current=new Tone.Gain(1).toDestination();tOk.current=true;const nv={...ss2R.current,[layer.k]:lv.v};ss2R.current=nv;setSs(nv);if(lv.v===0){killLayer(layer.k)}else{setTimeout(startSnd,300)}}}
+                    style={{flex:1,padding:"10px 0",borderRadius:10,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:active?600:400,
+                      border:"1px solid "+(active?"rgba(140,110,230,0.3)":"rgba(140,110,230,0.08)"),
+                      background:active?"rgba(140,110,230,0.15)":"rgba(255,255,255,0.02)",
+                      color:active?P.ac:"rgba(160,140,200,0.4)"}}>{lv.l}</button>})}
+              </div>
+              {layer.k==="binaural"&&ss2.binaural>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginTop:8}}>
+                {BIN.map((b,i)=><button key={i} onClick={()=>setBinP(i)} style={{padding:"5px 10px",borderRadius:10,fontSize:10,cursor:"pointer",
+                  border:"1px solid "+(binP===i?P.tl:P.gb),background:binP===i?"rgba(90,190,190,0.1)":"transparent",color:binP===i?P.tl:P.mt}}>{b.n}</button>)}</div>}
+              {layer.k==="solfeggio"&&ss2.solfeggio>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginTop:8}}>
+                {SOL.map((s,i)=><button key={i} onClick={()=>setSolP(i)} style={{padding:"5px 10px",borderRadius:10,fontSize:10,cursor:"pointer",
+                  border:"1px solid "+(solP===i?P.ac:P.gb),background:solP===i?"rgba(140,110,230,0.12)":"transparent",color:solP===i?P.ac:P.mt}}>{s.n}–{s.d}</button>)}</div>}
+            </div>
+          ))}
+          {ss2.binaural>0&&<p style={{fontSize:10,color:P.mt,fontStyle:"italic",textAlign:"center",marginTop:4}}>🎧 Headphones required for binaural beats</p>}
+        </div>
+      </div>}
+    </div>}
+
+
+  // SETTINGS
+  function SettVw(){
+    const pv=async(vid)=>{if(!elKey||!vid)return;try{const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:"Close your eyes and step into the reality you were born to live.",model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75}})});if(r.ok){const b=await r.blob();new Audio(URL.createObjectURL(b)).play()}}catch{}};
+    return<div className="fi" style={{padding:22}}><Hd text="Settings"/>
+      <Cd style={{marginBottom:14}}><h4 style={{margin:"0 0 12px",fontSize:14,color:P.ac,fontFamily:"'Cormorant Garamond',serif"}}>Voice</h4>
+        <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>ElevenLabs API Key</label>
+          <div style={{display:"flex",gap:6}}><GI value={elKey} onChange={e=>setElKey(e.target.value)} placeholder="sk_..." type="password" style={{flex:1}}/>
+            <Bt v="secondary" onClick={()=>saveElKey(elKey)} style={{padding:"10px 14px",fontSize:12}}>Save</Bt></div>
+          {elKey&&<p style={{fontSize:10,color:P.tl,marginTop:4}}>Key saved — syncs to all your devices</p>}</div>
+        {elKey?<><Bt v="secondary" onClick={fetchVc} ld={vLoading} style={{width:"100%",marginBottom:12}}>{voices.length?"Refresh ("+voices.length+")":"Load Voices"}</Bt>
+          {voices.length>0&&<div style={{maxHeight:220,overflow:"auto",marginBottom:10}}>{voices.map(v=><div key={v.voice_id} onClick={()=>saveSett({...sett,elevenLabsVoiceId:v.voice_id,elevenLabsVoiceName:v.name})} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,marginBottom:3,cursor:"pointer",background:sett.elevenLabsVoiceId===v.voice_id?"rgba(140,110,230,0.15)":P.glass,border:"1px solid "+(sett.elevenLabsVoiceId===v.voice_id?P.ac:P.gb)}}>
+            <div><p style={{margin:0,fontSize:12,fontWeight:sett.elevenLabsVoiceId===v.voice_id?600:400}}>{v.name}</p><p style={{margin:0,fontSize:9,color:P.mt}}>{v.labels?.gender||""} · {v.labels?.accent||""}</p></div>
+            <button onClick={e=>{e.stopPropagation();pv(v.voice_id)}} style={{background:"none",border:"1px solid "+P.gb,color:P.ac,padding:"3px 8px",borderRadius:6,fontSize:10,cursor:"pointer"}}>▶</button></div>)}</div>}
+          {sett.elevenLabsVoiceName&&<p style={{fontSize:11,color:P.ac}}>Selected: {sett.elevenLabsVoiceName}</p>}
+        </>:<p style={{fontSize:12,color:P.mt}}>Enter your ElevenLabs API key above to enable premium voices.</p>}</Cd>
+      <Cd style={{marginBottom:14}}><h4 style={{margin:"0 0 12px",fontSize:14,color:P.ac,fontFamily:"'Cormorant Garamond',serif"}}>Session Flow</h4>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><span style={{fontSize:12,color:P.mt}}>Skip energy check-in</span><Tg value={sett.skipEnergyCheckin} onChange={v=>saveSett({...sett,skipEnergyCheckin:v})}/></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><span style={{fontSize:12,color:P.mt}}>Breathing pacer</span><Tg value={sett.breathingEnabled} onChange={v=>saveSett({...sett,breathingEnabled:v})}/></div>
+        <div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:12,color:P.mt}}>Loop gap</span><span style={{fontSize:11,color:P.ac}}>{sett.loopGap}s</span></div><input type="range" min={10} max={120} step={5} value={sett.loopGap} onChange={e=>saveSett({...sett,loopGap:parseInt(e.target.value)})}/></div>
+        <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{BRTH.map((b,i)=><button key={i} onClick={()=>saveSett({...sett,breathingPattern:i})} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(sett.breathingPattern===i?P.tl:P.gb),background:sett.breathingPattern===i?"rgba(90,190,190,0.1)":"transparent",color:sett.breathingPattern===i?P.tl:P.mt}}>{b.n}</button>)}</div></Cd>
+      <Cd><h4 style={{margin:"0 0 10px",fontSize:14,color:P.mt,fontFamily:"'Cormorant Garamond',serif"}}>Account</h4>
+        <p style={{fontSize:11,color:P.mt,marginBottom:8}}>{user?.email}</p>
+        <Bt v="danger" onClick={async()=>{await sb?.auth.signOut();setVw("auth")}} style={{width:"100%"}}>Sign Out</Bt></Cd></div>}
+
+  // NAV
+  const nav=[{id:"library",ic:"📖",l:"Library"},{id:"blueprint",ic:"🏗",l:"Blueprint"},{id:"evidence",ic:"amulet",l:"Evidence"},{id:"log",ic:"📊",l:"Log"},{id:"settings",ic:"⚙",l:"Settings"}];
+  const showNav=!playing&&!["editor","affEditor","auth","onboarding"].includes(vw)&&user;
+  const rv=()=>{if(aLoading)return<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}><div style={{textAlign:"center"}}><Logo size={50}/><p style={{color:P.mt,marginTop:16,fontFamily:"'Nunito',sans-serif"}}>Opening portal...</p></div></div>;
+    switch(vw){case "auth":return<AuthVw/>;case "onboarding":return<OnboardVw/>;case "library":return<LibVw/>;case "editor":return<EdVw/>;case "affEditor":return<AffEdVw/>;case "blueprint":return<BpVw/>;case "evidence":return<EvVw/>;case "log":return<LogVw/>;case "player":return<PlayerVw/>;case "settings":return<SettVw/>;default:return<LibVw/>}};
+
+  return<div style={{height:"100vh",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative"}}>
+    <Stars/><Nebs/>
+    <div style={{flex:1,overflow:"auto",paddingBottom:showNav?62:0,position:"relative",zIndex:1}}>{rv()}</div>
+    {showNav&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"rgba(7,10,24,0.92)",borderTop:"1px solid "+P.gb,display:"flex",justifyContent:"space-around",padding:"6px 0 12px",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",zIndex:10}}>
+      {nav.map(n=><button key={n.id} onClick={()=>setVw(n.id)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,color:vw===n.id?P.ac:P.mt,fontSize:9,padding:"3px 10px",transition:"color 0.3s"}}><span style={{fontSize:18}}>{n.ic==="amulet"?<Logo size={14}/>:n.ic}</span>{n.l}</button>)}</div>}</div>
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<script>
+(function(){var c=document.createElement("canvas");c.width=180;c.height=180;var x=c.getContext("2d");
+x.fillStyle="#070a18";x.beginPath();x.roundRect(0,0,180,180,36);x.fill();
+x.strokeStyle="#c9a96e";x.lineWidth=3;x.lineJoin="round";
+x.beginPath();x.moveTo(72,22);x.lineTo(90,50);x.lineTo(108,22);x.stroke();
+x.lineWidth=2.5;x.beginPath();x.ellipse(58,26,10,5,0,0,Math.PI*2);x.stroke();
+x.beginPath();x.ellipse(122,26,10,5,0,0,Math.PI*2);x.stroke();
+x.lineWidth=2;x.beginPath();x.ellipse(46,28,8,4,0,0,Math.PI*2);x.stroke();
+x.beginPath();x.ellipse(134,28,8,4,0,0,Math.PI*2);x.stroke();
+x.lineWidth=3.5;x.beginPath();x.moveTo(90,50);x.lineTo(90,62);x.stroke();
+x.lineWidth=3;x.fillStyle="#1a0a05";x.strokeStyle="#c9a96e";
+x.beginPath();x.moveTo(48,68);x.lineTo(56,62);x.lineTo(124,62);x.lineTo(132,68);x.lineTo(136,78);x.lineTo(136,150);x.lineTo(132,158);x.lineTo(48,158);x.lineTo(44,150);x.lineTo(44,78);x.closePath();x.fill();x.stroke();
+x.globalAlpha=0.85;x.fillStyle="#c02020";x.beginPath();x.moveTo(52,72);x.lineTo(90,112);x.lineTo(128,72);x.lineTo(122,66);x.lineTo(58,66);x.closePath();x.fill();
+x.globalAlpha=0.8;x.fillStyle="#901818";x.beginPath();x.moveTo(52,72);x.lineTo(49,80);x.lineTo(49,146);x.lineTo(90,112);x.closePath();x.fill();
+x.fillStyle="#7a1010";x.beginPath();x.moveTo(128,72);x.lineTo(131,80);x.lineTo(131,146);x.lineTo(90,112);x.closePath();x.fill();
+x.globalAlpha=0.75;x.fillStyle="#a01515";x.beginPath();x.moveTo(49,146);x.lineTo(52,153);x.lineTo(128,153);x.lineTo(131,146);x.lineTo(90,112);x.closePath();x.fill();
+x.globalAlpha=1;
+var link=document.querySelector("link[rel='apple-touch-icon']");
+if(link)link.href=c.toDataURL("image/png");
+})();
+</script>
+</body>
+</html>
