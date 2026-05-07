@@ -410,21 +410,18 @@ function App(){
         {playing&&!aLd&&sentences.length===0&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
         {playing&&!aLd&&sentences.length>0&&(()=>{
           const activeIdx=sentences.findIndex((s,i)=>curTime>=s.start&&curTime<s.end);
-          const seekTo=(time)=>{if(auE.current){auE.current.currentTime=time;setCurTime(time)}};
-          return<div className="transcript-scroll" style={{width:"100%",maxHeight:280,overflow:"auto",position:"relative",margin:"0 auto",WebkitOverflowScrolling:"touch"}} 
-            onScroll={e=>{e.currentTarget.dataset.userScrolled="true"}}
-            ref={el=>{if(el&&el.dataset.userScrolled!=="true"&&activeIdx>=0){const target=el.children[1]?.children[activeIdx];if(target)target.scrollIntoView({behavior:"smooth",block:"center"})}}}>
-          <div style={{position:"sticky",top:0,left:0,right:0,height:30,background:"linear-gradient(180deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none",marginBottom:-30}}/>
-          <div style={{padding:"30px 0 30px",display:"flex",flexDirection:"column",gap:12}}>
+          return<div style={{width:"100%",maxHeight:280,overflow:"hidden",position:"relative",margin:"0 auto"}}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:40,background:"linear-gradient(180deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,height:40,background:"linear-gradient(0deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{padding:"50px 0",display:"flex",flexDirection:"column",gap:12,transition:"transform 0.8s ease",transform:"translateY("+(-(Math.max(0,activeIdx-1))*44)+"px)"}}>
             {sentences.map((s,i)=>{const active=i===activeIdx;const past=activeIdx>=0?i<activeIdx:curTime>=s.end;
-              return<p key={i} onClick={()=>seekTo(s.start)} style={{margin:0,padding:"6px 12px",borderRadius:10,fontSize:active?17:14,minHeight:32,
-                fontFamily:"'Cormorant Garamond',serif",lineHeight:1.7,letterSpacing:0.3,transition:"all 0.6s ease",cursor:"pointer",
-                color:active?"#fff":past?"rgba(160,140,200,0.25)":"rgba(160,140,200,0.4)",
+              return<p key={i} style={{margin:0,padding:"6px 12px",borderRadius:10,fontSize:active?17:14,minHeight:32,
+                fontFamily:"'Cormorant Garamond',serif",lineHeight:1.7,letterSpacing:0.3,transition:"all 0.6s ease",
+                color:active?"#fff":past?"rgba(160,140,200,0.2)":"rgba(160,140,200,0.4)",
                 fontWeight:active?500:400,
                 background:active?"rgba(140,110,230,0.1)":"transparent",
                 transform:active?"scale(1.02)":"scale(1)"}}>{s.text}</p>})}
           </div>
-          <div style={{position:"sticky",bottom:0,left:0,right:0,height:30,background:"linear-gradient(0deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none",marginTop:-30}}/>
         </div>})()}
         {playing&&!aLd&&sentences.length>0&&<p style={{fontSize:11,color:P.mt,marginTop:8,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
         {playing&&!aLd&&audioDur>0&&<div style={{width:"100%",maxWidth:220,margin:"12px auto 0",opacity:0.55}}>
@@ -436,7 +433,12 @@ function App(){
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:24,marginBottom:18}}>
           <button onClick={()=>setLoop(!loopOn)} style={{background:"none",border:"none",color:loopOn?P.ac:P.mt,cursor:"pointer",fontSize:20}}>🔁</button>
           {!playing?<button onClick={()=>cur&&startPlay(cur,isAff)} disabled={!cur} style={{width:64,height:64,borderRadius:"50%",border:"none",background:"linear-gradient(135deg,rgba(180,40,40,0.8),rgba(140,20,20,0.9))",color:"rgba(255,200,200,0.9)",fontSize:24,cursor:"pointer",boxShadow:"0 0 40px rgba(180,40,40,0.2)"}}>▶</button>
-            :<div style={{display:"flex",gap:14}}><button onClick={togPause} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(180,40,40,0.3)",background:"transparent",color:"rgba(200,120,120,0.7)",fontSize:18,cursor:"pointer"}}>{paused?"▶":"⏸"}</button><button onClick={()=>stopPlay(true)} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(196,92,92,0.3)",background:"transparent",color:P.rd,fontSize:18,cursor:"pointer"}}>⏹</button></div>}
+            :<div style={{display:"flex",gap:10,alignItems:"center"}}>
+              <button onClick={()=>{if(auE.current){auE.current.currentTime=Math.max(0,auE.current.currentTime-10);setCurTime(auE.current.currentTime)}}} style={{width:40,height:40,borderRadius:"50%",border:"1px solid rgba(140,110,230,0.15)",background:"transparent",color:"rgba(160,140,200,0.5)",fontSize:11,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:600}}>-10</button>
+              <button onClick={togPause} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(180,40,40,0.3)",background:"transparent",color:"rgba(200,120,120,0.7)",fontSize:18,cursor:"pointer"}}>{paused?"▶":"⏸"}</button>
+              <button onClick={()=>stopPlay(true)} style={{width:40,height:40,borderRadius:"50%",border:"2px solid rgba(196,92,92,0.2)",background:"transparent",color:P.rd,fontSize:14,cursor:"pointer"}}>⏹</button>
+              <button onClick={()=>{if(auE.current){auE.current.currentTime=Math.min(auE.current.duration||9999,auE.current.currentTime+10);setCurTime(auE.current.currentTime)}}} style={{width:40,height:40,borderRadius:"50%",border:"1px solid rgba(140,110,230,0.15)",background:"transparent",color:"rgba(160,140,200,0.5)",fontSize:11,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:600}}>+10</button>
+            </div>}
           <button onClick={()=>setDim(!dimmed)} style={{background:"none",border:"none",color:dimmed?P.ac:P.mt,cursor:"pointer",fontSize:18}}>{dimmed?"☀":"🌑"}</button></div>
         <div style={{marginBottom:14}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:6}}>Sleep Timer {tLeft!==null&&<span style={{color:P.ac,fontFamily:"monospace"}}> · {fmt(tLeft)} remaining</span>}</label><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
           {TIMERS.map(t=><button key={t} onClick={()=>{setSlpM(t);if(playing){if(tmR.current)clearInterval(tmR.current);const end=Date.now()+t*60000;setTLeft(t*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===t?P.ac:P.gb),background:slpM===t?"rgba(140,110,230,0.15)":"transparent",color:slpM===t?P.ac:P.mt}}>{t}m</button>)}
