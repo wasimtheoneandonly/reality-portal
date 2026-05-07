@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#070a18">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 80'%3E%3Crect width='64' height='80' rx='8' fill='%23070a18'/%3E%3Cpath d='M26 3 L32 14 L38 3' stroke='%23c9a96e' stroke-width='2.5' fill='none' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='5' rx='5' ry='2.5' stroke='%23c9a96e' stroke-width='1.8' fill='none'/%3E%3Cellipse cx='44' cy='5' rx='5' ry='2.5' stroke='%23c9a96e' stroke-width='1.8' fill='none'/%3E%3Cellipse cx='14' cy='6' rx='4' ry='2' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3Cellipse cx='50' cy='6' rx='4' ry='2' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3Cline x1='32' y1='14' x2='32' y2='22' stroke='%23c9a96e' stroke-width='2'/%3E%3Cpath d='M14 25 L18 22 L46 22 L50 25 L52 30 L52 65 L50 70 L14 70 L12 65 L12 30 Z' fill='%231a0a05' stroke='%23c9a96e' stroke-width='1.8'/%3E%3Cpath d='M16 27 L19 24.5 L45 24.5 L48 27 L49.5 31 L49.5 63.5 L48 67 L16 67 L14.5 63.5 L14.5 31 Z' fill='%238b1a1a'/%3E%3Cpath d='M16 27 L32 45 L48 27 L45 24.5 L19 24.5 Z' fill='%23c02020' opacity='0.85'/%3E%3Cpath d='M16 27 L14.5 31 L14.5 63.5 L32 45 Z' fill='%23901818' opacity='0.8'/%3E%3Cpath d='M48 27 L49.5 31 L49.5 63.5 L32 45 Z' fill='%237a1010' opacity='0.8'/%3E%3Cpath d='M14.5 63.5 L16 67 L48 67 L49.5 63.5 L32 45 Z' fill='%23a01515' opacity='0.75'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23070a18'/%3E%3Cpath d='M72 22 L90 50 L108 22' stroke='%23c9a96e' stroke-width='4' fill='none' stroke-linejoin='round'/%3E%3Cellipse cx='58' cy='26' rx='10' ry='5' stroke='%23c9a96e' stroke-width='3' fill='none'/%3E%3Cellipse cx='122' cy='26' rx='10' ry='5' stroke='%23c9a96e' stroke-width='3' fill='none'/%3E%3Cellipse cx='46' cy='28' rx='8' ry='4' stroke='%23c9a96e' stroke-width='2.5' fill='none'/%3E%3Cellipse cx='134' cy='28' rx='8' ry='4' stroke='%23c9a96e' stroke-width='2.5' fill='none'/%3E%3Cline x1='90' y1='50' x2='90' y2='62' stroke='%23c9a96e' stroke-width='3.5'/%3E%3Cpath d='M48 68 L56 62 L124 62 L132 68 L136 78 L136 150 L132 158 L48 158 L44 150 L44 78 Z' fill='%231a0a05' stroke='%23c9a96e' stroke-width='3'/%3E%3Cpath d='M52 72 L58 66 L122 66 L128 72 L131 80 L131 146 L128 153 L52 153 L49 146 L49 80 Z' fill='%238b1a1a'/%3E%3Cpath d='M52 72 L90 112 L128 72 L122 66 L58 66 Z' fill='%23c02020' opacity='0.85'/%3E%3Cpath d='M52 72 L49 80 L49 146 L90 112 Z' fill='%23901818' opacity='0.8'/%3E%3Cpath d='M128 72 L131 80 L131 146 L90 112 Z' fill='%237a1010' opacity='0.8'/%3E%3Cpath d='M49 146 L52 153 L128 153 L131 146 L90 112 Z' fill='%23a01515' opacity='0.75'/%3E%3Cpath d='M58 75 L66 84 L58 93 Z' fill='rgba(255,200,200,0.2)'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -482,6 +484,27 @@ function App(){
       {nav.map(n=><button key={n.id} onClick={()=>setVw(n.id)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,color:vw===n.id?P.ac:P.mt,fontSize:9,padding:"3px 10px",transition:"color 0.3s"}}><span style={{fontSize:18}}>{n.ic==="amulet"?<Logo size={14}/>:n.ic}</span>{n.l}</button>)}</div>}</div>
 }
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<script>
+(function(){var c=document.createElement("canvas");c.width=180;c.height=180;var x=c.getContext("2d");
+x.fillStyle="#070a18";x.beginPath();x.roundRect(0,0,180,180,36);x.fill();
+x.strokeStyle="#c9a96e";x.lineWidth=3;x.lineJoin="round";
+x.beginPath();x.moveTo(72,22);x.lineTo(90,50);x.lineTo(108,22);x.stroke();
+x.lineWidth=2.5;x.beginPath();x.ellipse(58,26,10,5,0,0,Math.PI*2);x.stroke();
+x.beginPath();x.ellipse(122,26,10,5,0,0,Math.PI*2);x.stroke();
+x.lineWidth=2;x.beginPath();x.ellipse(46,28,8,4,0,0,Math.PI*2);x.stroke();
+x.beginPath();x.ellipse(134,28,8,4,0,0,Math.PI*2);x.stroke();
+x.lineWidth=3.5;x.beginPath();x.moveTo(90,50);x.lineTo(90,62);x.stroke();
+x.lineWidth=3;x.fillStyle="#1a0a05";x.strokeStyle="#c9a96e";
+x.beginPath();x.moveTo(48,68);x.lineTo(56,62);x.lineTo(124,62);x.lineTo(132,68);x.lineTo(136,78);x.lineTo(136,150);x.lineTo(132,158);x.lineTo(48,158);x.lineTo(44,150);x.lineTo(44,78);x.closePath();x.fill();x.stroke();
+x.globalAlpha=0.85;x.fillStyle="#c02020";x.beginPath();x.moveTo(52,72);x.lineTo(90,112);x.lineTo(128,72);x.lineTo(122,66);x.lineTo(58,66);x.closePath();x.fill();
+x.globalAlpha=0.8;x.fillStyle="#901818";x.beginPath();x.moveTo(52,72);x.lineTo(49,80);x.lineTo(49,146);x.lineTo(90,112);x.closePath();x.fill();
+x.fillStyle="#7a1010";x.beginPath();x.moveTo(128,72);x.lineTo(131,80);x.lineTo(131,146);x.lineTo(90,112);x.closePath();x.fill();
+x.globalAlpha=0.75;x.fillStyle="#a01515";x.beginPath();x.moveTo(49,146);x.lineTo(52,153);x.lineTo(128,153);x.lineTo(131,146);x.lineTo(90,112);x.closePath();x.fill();
+x.globalAlpha=1;
+var link=document.querySelector("link[rel='apple-touch-icon']");
+if(link)link.href=c.toDataURL("image/png");
+})();
 </script>
 </body>
 </html>
