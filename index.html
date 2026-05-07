@@ -228,7 +228,7 @@ function App(){
     if(name==="rain"&&rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}
     if(name==="binaural"&&bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}
     if(name==="solfeggio"&&sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
-  useEffect(()=>{if(!playing)return;(async()=>{await enT();startSnd()})();
+  useEffect(()=>{if(!playing&&!showSS)return;(async()=>{await enT();startSnd()})();
     if(ss2.ambient===0)killLayer("ambient");if(ss2.harp===0)killLayer("harp");if(ss2.rain===0)killLayer("rain");
     if(ss2.binaural===0)killLayer("binaural");if(ss2.solfeggio===0)killLayer("solfeggio")},[ss2]);
 
@@ -457,8 +457,8 @@ function App(){
           <button onClick={()=>{setSlpM(0);if(playing&&tmR.current){clearInterval(tmR.current);tmR.current=null;setTLeft(null);if(mG.current)mG.current.gain.value=1}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===0?P.tl:P.gb),background:slpM===0?"rgba(90,190,190,0.1)":"transparent",color:slpM===0?P.tl:P.mt}}>∞</button></div></div>
         <Bt v="secondary" onClick={async()=>{await enT();setShowSS(true)}} style={{width:"100%",marginTop:4}}>🎵 Soundscape Mixer</Bt>
       </div>
-      {showSS&&<div onClick={()=>setShowSS(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:50,display:"flex",alignItems:"flex-end"}}>
-        <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"75vh",overflow:"auto",background:"#0d1228",borderRadius:"20px 20px 0 0",padding:"20px 22px 30px",border:"1px solid rgba(140,110,230,0.1)",borderBottom:"none"}}>
+      {showSS&&<div onClick={()=>setShowSS(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
+        <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"80vh",overflow:"auto",background:"#0d1228",borderRadius:"20px 20px 0 0",padding:"20px 22px 60px",border:"1px solid rgba(140,110,230,0.1)",borderBottom:"none"}}>
           <div style={{width:40,height:4,background:"rgba(140,110,230,0.2)",borderRadius:2,margin:"0 auto 18px"}}/>
           <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,color:P.ac,margin:"0 0 16px",textAlign:"center"}}>Soundscape Mixer</h3>
           
@@ -470,7 +470,7 @@ function App(){
               {n:"Theta Waves",v:{ambient:0.3,harp:0,rain:0.3,binaural:0.7,solfeggio:0}},
               {n:"Full Immersion",v:{ambient:0.5,harp:0.3,rain:0.4,binaural:0.3,solfeggio:0.3}},
               {n:"Silent",v:{ambient:0,harp:0,rain:0,binaural:0,solfeggio:0}}
-            ].map(pr=><button key={pr.n} onClick={()=>setSs(pr.v)}
+            ].map(pr=><button key={pr.n} onClick={async()=>{await enT();stopSnd();setSs(pr.v);setTimeout(startSnd,150)}}
               style={{padding:"8px 14px",borderRadius:12,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",
                 border:"1px solid rgba(140,110,230,0.12)",background:"rgba(140,110,230,0.06)",color:"rgba(200,180,255,0.7)"}}>{pr.n}</button>)}
           </div>
@@ -481,7 +481,7 @@ function App(){
               <div style={{display:"flex",gap:6}}>
                 {[{l:"Off",v:0},{l:"Low",v:0.3},{l:"Med",v:0.6},{l:"High",v:0.9}].map(lv=>{
                   const cur=ss2[layer.k];const active=lv.v===0?cur===0:Math.abs(cur-lv.v)<0.15;
-                  return<button key={lv.l} onClick={()=>setSs(p=>({...p,[layer.k]:lv.v}))}
+                  return<button key={lv.l} onClick={async()=>{await enT();if(lv.v===0){killLayer(layer.k);setSs(p=>({...p,[layer.k]:0}))}else{setSs(p=>({...p,[layer.k]:lv.v}));setTimeout(startSnd,150)}}}
                     style={{flex:1,padding:"10px 0",borderRadius:10,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:active?600:400,
                       border:"1px solid "+(active?"rgba(140,110,230,0.3)":"rgba(140,110,230,0.08)"),
                       background:active?"rgba(140,110,230,0.15)":"rgba(255,255,255,0.02)",
