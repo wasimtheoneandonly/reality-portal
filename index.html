@@ -131,7 +131,7 @@ function App(){
   const[ss2,setSs]=useState({ambient:0,harp:0,rain:0,binaural:0,solfeggio:0});
   const[binP,setBinP]=useState(1);const[solP,setSolP]=useState(2);
   const[brAct,setBrAct]=useState(false);const[brPh,setBrPh]=useState("");const[brCt,setBrCt]=useState(0);
-  const[energyPhase,setEP]=useState(false);const[energyChoice,setEC]=useState(null);
+  const[energyPhase,setEP]=useState(false);const[energyChoice,setEC]=useState(null);const[showSS,setShowSS]=useState(false);
   const[alignment,setAlignment]=useState(null);const[curTime,setCurTime]=useState(0);const[sentences,setSentences]=useState([]);const[audioDur,setAudioDur]=useState(0);
   const tOk=useRef(false);const mG=useRef(null);const ambR=useRef(null);const hpR=useRef(null);const hpI=useRef(null);
   const rnR=useRef(null);const rnF=useRef(null);const bL=useRef(null);const bR=useRef(null);const bPL=useRef(null);const bPR=useRef(null);
@@ -200,25 +200,37 @@ function App(){
     return{url:URL.createObjectURL(blob),alignment:al}}
 
   // Tone.js
-  async function enT(){if(!tOk.current){await Tone.start();tOk.current=true}if(!mG.current)mG.current=new Tone.Gain(1).toDestination()}
+  async function enT(){if(!tOk.current){await Tone.start();Tone.Transport.start();tOk.current=true}if(!mG.current)mG.current=new Tone.Gain(1).toDestination()}
   function startSnd(){const mg=mG.current;if(!mg)return;
-    if(ss2.ambient>0&&!ambR.current){const rv=new Tone.Reverb({decay:8,wet:0.7}).connect(mg);const sy=new Tone.PolySynth(Tone.Synth,{oscillator:{type:"sine"},envelope:{attack:3,decay:2,sustain:0.7,release:4},volume:-18}).connect(rv);ambR.current={sy,rv};const pl=()=>{const ch=[["C3","E3","G3","B3"],["A2","C3","E3","G3"],["F2","A2","C3","E3"]];sy.triggerAttackRelease(ch[Math.floor(Math.random()*ch.length)],"8n")};pl();ambR.current.iv=setInterval(pl,8000)}
-    if(ambR.current)ambR.current.sy.volume.value=-18+(ss2.ambient*18);
-    if(ss2.harp>0&&!hpR.current){const sy=new Tone.PluckSynth({volume:-14}).connect(mg);hpR.current=sy;const nt=["C4","D4","E4","G4","A4","C5","D5","E5","G5","A5"];hpI.current=setInterval(()=>{if(!hpR.current)return;sy.triggerAttack(nt[Math.floor(Math.random()*nt.length)])},2500+Math.random()*3000)}
-    if(hpR.current)hpR.current.volume.value=-14+(ss2.harp*14);
+    if(ss2.ambient>0&&!ambR.current){
+      const dl=new Tone.FeedbackDelay({delayTime:0.8,feedback:0.4,wet:0.5}).connect(mg);
+      const sy=new Tone.PolySynth(Tone.Synth,{oscillator:{type:"sine"},envelope:{attack:4,decay:3,sustain:0.8,release:5},volume:-16}).connect(dl);
+      const chords=[["C3","E3","G3","B3"],["A2","C3","E3","G3"],["F2","A2","C3","E3"],["D3","F3","A3","C4"]];
+      const lp=new Tone.Loop(()=>{try{sy.triggerAttackRelease(chords[Math.floor(Math.random()*chords.length)],"4n")}catch{}},8);
+      lp.start(0);ambR.current={sy,dl,lp}}
+    if(ambR.current)ambR.current.sy.volume.value=-16+(ss2.ambient*16);
+    if(ss2.harp>0&&!hpR.current){
+      const sy=new Tone.Synth({oscillator:{type:"triangle"},envelope:{attack:0.01,decay:1.5,sustain:0,release:1},volume:-12}).connect(mg);
+      const notes=["C4","D4","E4","G4","A4","C5","D5","E5","G5","A5"];
+      const lp=new Tone.Loop(()=>{try{sy.triggerAttackRelease(notes[Math.floor(Math.random()*notes.length)],"8n")}catch{}},2);
+      lp.start(0);hpR.current={sy,lp}}
+    if(hpR.current)hpR.current.sy.volume.value=-12+(ss2.harp*12);
     if(ss2.rain>0&&!rnR.current){const f=new Tone.Filter(600,"lowpass").connect(mg);const n=new Tone.Noise("pink").connect(f);n.volume.value=-20;n.start();rnR.current=n;rnF.current=f}
     if(rnR.current)rnR.current.volume.value=-20+(ss2.rain*14);
     if(ss2.binaural>0&&!bL.current){const p=BIN[binP];const pL=new Tone.Panner(-1).connect(mg);const pR=new Tone.Panner(1).connect(mg);const oL=new Tone.Oscillator(p.b,"sine").connect(pL);const oR=new Tone.Oscillator(p.b+p.hz,"sine").connect(pR);oL.volume.value=-22;oR.volume.value=-22;oL.start();oR.start();bL.current=oL;bR.current=oR;bPL.current=pL;bPR.current=pR}
     if(bL.current){const v=-22+(ss2.binaural*16);bL.current.volume.value=v;bR.current.volume.value=v}
     if(ss2.solfeggio>0&&!sO.current){const o=new Tone.Oscillator(SOL[solP].f,"sine").connect(mg);o.volume.value=-26;o.start();sO.current=o}
     if(sO.current)sO.current.volume.value=-26+(ss2.solfeggio*14)}
-  function stopSnd(){if(ambR.current){clearInterval(ambR.current.iv);ambR.current.sy.dispose();ambR.current.rv.dispose();ambR.current=null}if(hpR.current){clearInterval(hpI.current);hpR.current.dispose();hpR.current=null}if(rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}if(bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}if(sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
+  function stopSnd(){if(ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}if(hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}if(rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}if(bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}if(sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
+  function killLayer(name){
+    if(name==="ambient"&&ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}
+    if(name==="harp"&&hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}
+    if(name==="rain"&&rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}
+    if(name==="binaural"&&bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}
+    if(name==="solfeggio"&&sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
   useEffect(()=>{if(!playing)return;(async()=>{await enT();startSnd()})();
-    if(ss2.ambient===0&&ambR.current){clearInterval(ambR.current.iv);ambR.current.sy.dispose();ambR.current.rv.dispose();ambR.current=null}
-    if(ss2.harp===0&&hpR.current){clearInterval(hpI.current);hpR.current.dispose();hpR.current=null}
-    if(ss2.rain===0&&rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}
-    if(ss2.binaural===0&&bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}
-    if(ss2.solfeggio===0&&sO.current){sO.current.stop();sO.current.dispose();sO.current=null}},[ss2]);
+    if(ss2.ambient===0)killLayer("ambient");if(ss2.harp===0)killLayer("harp");if(ss2.rain===0)killLayer("rain");
+    if(ss2.binaural===0)killLayer("binaural");if(ss2.solfeggio===0)killLayer("solfeggio")},[ss2]);
 
   function doBr(){return new Promise(res=>{const p=BRTH[sett.breathingPattern];let cy=0;
     const go=()=>{if(cy>=3||!plR.current){res();return}setBrPh("Breathe In");setBrCt(p.i);let cd=p.i;
@@ -246,7 +258,7 @@ function App(){
     else fbTTS(scr)}
   function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
   function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
-  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);setAudioDur(0);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
+  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);setAudioDur(0);setShowSS(false);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
     if(log&&seS.current){const dur=Math.round((Date.now()-seS.current)/60000);logSess(cur?.title||"Session",dur,energyChoice)}}
 
   // ═══ VIEWS ═══
@@ -443,15 +455,51 @@ function App(){
         <div style={{marginBottom:14}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:6}}>Sleep Timer {tLeft!==null&&<span style={{color:P.ac,fontFamily:"monospace"}}> · {fmt(tLeft)} remaining</span>}</label><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
           {TIMERS.map(t=><button key={t} onClick={()=>{setSlpM(t);if(playing){if(tmR.current)clearInterval(tmR.current);const end=Date.now()+t*60000;setTLeft(t*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===t?P.ac:P.gb),background:slpM===t?"rgba(140,110,230,0.15)":"transparent",color:slpM===t?P.ac:P.mt}}>{t}m</button>)}
           <button onClick={()=>{setSlpM(0);if(playing&&tmR.current){clearInterval(tmR.current);tmR.current=null;setTLeft(null);if(mG.current)mG.current.gain.value=1}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===0?P.tl:P.gb),background:slpM===0?"rgba(90,190,190,0.1)":"transparent",color:slpM===0?P.tl:P.mt}}>∞</button></div></div>
-        <Cd><h4 style={{margin:"0 0 12px",fontSize:14,fontFamily:"'Cormorant Garamond',serif",color:P.ac}}>Soundscape</h4>
-          <Sl l="Ambient" ic="🌊" v={ss2.ambient} onChange={v=>setSs(p=>({...p,ambient:v}))}/>
-          <Sl l="Harp" ic="🎵" v={ss2.harp} onChange={v=>setSs(p=>({...p,harp:v}))}/>
-          <Sl l="Rain" ic="🌧" v={ss2.rain} onChange={v=>setSs(p=>({...p,rain:v}))}/>
-          <Sl l="Binaural" ic="🧠" v={ss2.binaural} onChange={v=>setSs(p=>({...p,binaural:v}))}/>
-          {ss2.binaural>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:8,marginTop:-6}}>{BIN.map((b,i)=><button key={i} onClick={()=>setBinP(i)} style={{padding:"3px 8px",borderRadius:12,fontSize:9,cursor:"pointer",border:"1px solid "+(binP===i?P.tl:P.gb),background:binP===i?"rgba(90,190,190,0.1)":"transparent",color:binP===i?P.tl:P.mt}}>{b.n}</button>)}</div>}
-          <Sl l="Solfeggio" ic="🔔" v={ss2.solfeggio} onChange={v=>setSs(p=>({...p,solfeggio:v}))}/>
-          {ss2.solfeggio>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:6,marginTop:-6}}>{SOL.map((s,i)=><button key={i} onClick={()=>setSolP(i)} style={{padding:"3px 8px",borderRadius:12,fontSize:9,cursor:"pointer",border:"1px solid "+(solP===i?P.ac:P.gb),background:solP===i?"rgba(140,110,230,0.12)":"transparent",color:solP===i?P.ac:P.mt}}>{s.n}–{s.d}</button>)}</div>}
-          {ss2.binaural>0&&<p style={{fontSize:9,color:P.mt,fontStyle:"italic"}}>🎧 Headphones required</p>}</Cd></div></div>}
+        <Bt v="secondary" onClick={async()=>{await enT();setShowSS(true)}} style={{width:"100%",marginTop:4}}>🎵 Soundscape Mixer</Bt>
+      </div>
+      {showSS&&<div onClick={()=>setShowSS(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:50,display:"flex",alignItems:"flex-end"}}>
+        <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"75vh",overflow:"auto",background:"#0d1228",borderRadius:"20px 20px 0 0",padding:"20px 22px 30px",border:"1px solid rgba(140,110,230,0.1)",borderBottom:"none"}}>
+          <div style={{width:40,height:4,background:"rgba(140,110,230,0.2)",borderRadius:2,margin:"0 auto 18px"}}/>
+          <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,color:P.ac,margin:"0 0 16px",textAlign:"center"}}>Soundscape Mixer</h3>
+          
+          <p style={{fontSize:11,color:P.gd,margin:"0 0 10px",letterSpacing:0.5}}>Presets</p>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:20}}>
+            {[{n:"Deep Space",v:{ambient:0.6,harp:0,rain:0,binaural:0.4,solfeggio:0.3}},
+              {n:"Gentle Rain",v:{ambient:0.3,harp:0,rain:0.8,binaural:0,solfeggio:0}},
+              {n:"Temple Harp",v:{ambient:0.2,harp:0.7,rain:0,binaural:0,solfeggio:0.3}},
+              {n:"Theta Waves",v:{ambient:0.3,harp:0,rain:0.3,binaural:0.7,solfeggio:0}},
+              {n:"Full Immersion",v:{ambient:0.5,harp:0.3,rain:0.4,binaural:0.3,solfeggio:0.3}},
+              {n:"Silent",v:{ambient:0,harp:0,rain:0,binaural:0,solfeggio:0}}
+            ].map(pr=><button key={pr.n} onClick={()=>setSs(pr.v)}
+              style={{padding:"8px 14px",borderRadius:12,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",
+                border:"1px solid rgba(140,110,230,0.12)",background:"rgba(140,110,230,0.06)",color:"rgba(200,180,255,0.7)"}}>{pr.n}</button>)}
+          </div>
+
+          {[{k:"ambient",n:"Ambient Pad",ic:"🌊"},{k:"harp",n:"Harp",ic:"🎵"},{k:"rain",n:"Rain",ic:"🌧"},{k:"binaural",n:"Binaural Beats",ic:"🧠"},{k:"solfeggio",n:"Solfeggio Tone",ic:"🔔"}].map(layer=>(
+            <div key={layer.k} style={{marginBottom:14}}>
+              <p style={{fontSize:13,color:P.mt,margin:"0 0 6px"}}>{layer.ic} {layer.n}</p>
+              <div style={{display:"flex",gap:6}}>
+                {[{l:"Off",v:0},{l:"Low",v:0.3},{l:"Med",v:0.6},{l:"High",v:0.9}].map(lv=>{
+                  const cur=ss2[layer.k];const active=lv.v===0?cur===0:Math.abs(cur-lv.v)<0.15;
+                  return<button key={lv.l} onClick={()=>setSs(p=>({...p,[layer.k]:lv.v}))}
+                    style={{flex:1,padding:"10px 0",borderRadius:10,fontSize:12,cursor:"pointer",fontFamily:"'Nunito',sans-serif",fontWeight:active?600:400,
+                      border:"1px solid "+(active?"rgba(140,110,230,0.3)":"rgba(140,110,230,0.08)"),
+                      background:active?"rgba(140,110,230,0.15)":"rgba(255,255,255,0.02)",
+                      color:active?P.ac:"rgba(160,140,200,0.4)"}}>{lv.l}</button>})}
+              </div>
+              {layer.k==="binaural"&&ss2.binaural>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginTop:8}}>
+                {BIN.map((b,i)=><button key={i} onClick={()=>setBinP(i)} style={{padding:"5px 10px",borderRadius:10,fontSize:10,cursor:"pointer",
+                  border:"1px solid "+(binP===i?P.tl:P.gb),background:binP===i?"rgba(90,190,190,0.1)":"transparent",color:binP===i?P.tl:P.mt}}>{b.n}</button>)}</div>}
+              {layer.k==="solfeggio"&&ss2.solfeggio>0&&<div style={{display:"flex",gap:4,flexWrap:"wrap",marginTop:8}}>
+                {SOL.map((s,i)=><button key={i} onClick={()=>setSolP(i)} style={{padding:"5px 10px",borderRadius:10,fontSize:10,cursor:"pointer",
+                  border:"1px solid "+(solP===i?P.ac:P.gb),background:solP===i?"rgba(140,110,230,0.12)":"transparent",color:solP===i?P.ac:P.mt}}>{s.n}–{s.d}</button>)}</div>}
+            </div>
+          ))}
+          {ss2.binaural>0&&<p style={{fontSize:10,color:P.mt,fontStyle:"italic",textAlign:"center",marginTop:4}}>🎧 Headphones required for binaural beats</p>}
+        </div>
+      </div>}
+    </div>}
+
 
   // SETTINGS
   function SettVw(){
