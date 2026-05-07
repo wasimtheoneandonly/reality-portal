@@ -212,22 +212,24 @@ function App(){
       lp.start();ambR.current={sy,dl,lp}}
     if(ambR.current)ambR.current.sy.volume.value=-14+(s.ambient*14);
     if(s.harp>0&&!hpR.current){
-      const sy=new Tone.Synth({oscillator:{type:"sine"},envelope:{attack:0.005,decay:2.5,sustain:0,release:2},volume:-10}).connect(mg);
-      const notes=["C4","D4","E4","G4","A4","C5","D5","E5","G5","A5"];
-      sy.triggerAttackRelease(notes[Math.floor(Math.random()*notes.length)],"8n");
-      const lp=new Tone.Loop(()=>{try{sy.triggerAttackRelease(notes[Math.floor(Math.random()*notes.length)],"8n")}catch{}},2.5);
-      lp.start();hpR.current={sy,lp}}
-    if(hpR.current)hpR.current.sy.volume.value=-10+(s.harp*10);
+      const sampler=new Tone.Sampler({urls:{C4:"C4.mp3",E4:"E4.mp3",G4:"G4.mp3",A4:"A4.mp3",C5:"C5.mp3",E5:"E5.mp3"},
+        baseUrl:"https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/harp-mp3/",release:2,volume:-8,
+        onload:()=>{const notes=["C4","D4","E4","G4","A4","C5","D5","E5","G5","A5"];
+          const lp=new Tone.Loop(()=>{try{sampler.triggerAttackRelease(notes[Math.floor(Math.random()*notes.length)],1.5)}catch{}},2.5);
+          lp.start();if(hpR.current)hpR.current.lp=lp}
+      }).connect(mg);
+      hpR.current={sy:sampler,lp:null}}
+    if(hpR.current)hpR.current.sy.volume.value=-8+(s.harp*8);
     if(s.rain>0&&!rnR.current){const f=new Tone.Filter(600,"lowpass").connect(mg);const n=new Tone.Noise("pink").connect(f);n.volume.value=-20;n.start();rnR.current=n;rnF.current=f}
     if(rnR.current)rnR.current.volume.value=-20+(s.rain*14);
     if(s.binaural>0&&!bL.current){const p=BIN[binP];const pL=new Tone.Panner(-1).connect(mg);const pR=new Tone.Panner(1).connect(mg);const oL=new Tone.Oscillator(p.b,"sine").connect(pL);const oR=new Tone.Oscillator(p.b+p.hz,"sine").connect(pR);oL.volume.value=-22;oR.volume.value=-22;oL.start();oR.start();bL.current=oL;bR.current=oR;bPL.current=pL;bPR.current=pR}
     if(bL.current){const v=-22+(s.binaural*16);bL.current.volume.value=v;bR.current.volume.value=v}
     if(s.solfeggio>0&&!sO.current){const o=new Tone.Oscillator(SOL[solP].f,"sine").connect(mg);o.volume.value=-26;o.start();sO.current=o}
     if(sO.current)sO.current.volume.value=-26+(s.solfeggio*14)}
-  function stopSnd(){if(ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}if(hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}if(rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}if(bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}if(sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
+  function stopSnd(){if(ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}if(hpR.current){if(hpR.current.lp){hpR.current.lp.stop();hpR.current.lp.dispose()}hpR.current.sy.dispose();hpR.current=null}if(rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}if(bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}if(sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
   function killLayer(name){
     if(name==="ambient"&&ambR.current){ambR.current.lp.stop();ambR.current.lp.dispose();ambR.current.sy.dispose();ambR.current.dl.dispose();ambR.current=null}
-    if(name==="harp"&&hpR.current){hpR.current.lp.stop();hpR.current.lp.dispose();hpR.current.sy.dispose();hpR.current=null}
+    if(name==="harp"&&hpR.current){if(hpR.current.lp){hpR.current.lp.stop();hpR.current.lp.dispose()}hpR.current.sy.dispose();hpR.current=null}
     if(name==="rain"&&rnR.current){rnR.current.stop();rnR.current.dispose();rnF.current.dispose();rnR.current=null;rnF.current=null}
     if(name==="binaural"&&bL.current){bL.current.stop();bL.current.dispose();bR.current.stop();bR.current.dispose();bPL.current.dispose();bPR.current.dispose();bL.current=null;bR.current=null}
     if(name==="solfeggio"&&sO.current){sO.current.stop();sO.current.dispose();sO.current=null}}
