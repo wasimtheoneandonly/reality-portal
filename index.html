@@ -30,6 +30,11 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
 @keyframes pulseGrow{0%{transform:scale(0.7)}100%{transform:scale(1.1)}}
 @keyframes pulseShrink{0%{transform:scale(1.1)}100%{transform:scale(0.7)}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes rubyGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(192,32,32,0.35)) drop-shadow(0 0 10px rgba(192,32,32,0.15))}50%{filter:drop-shadow(0 0 8px rgba(192,32,32,0.55)) drop-shadow(0 0 18px rgba(192,32,32,0.3))}}
+@keyframes rubyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes ringPulse{0%,100%{opacity:0.06}50%{opacity:0.16}}
+@keyframes ringPulse2{0%,100%{opacity:0.04}50%{opacity:0.1}}
+@keyframes ringPulse3{0%,100%{opacity:0.1}50%{opacity:0.22}}
 .fi{animation:fadeIn 0.4s ease-out}.sf{position:fixed;inset:0;pointer-events:none;z-index:0}.nb{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(60px)}
 </style>
 </head>
@@ -75,26 +80,36 @@ function GI({value,onChange,placeholder,type="text",style:sx={}}){return<input t
 function Tg({value,onChange}){return<button onClick={()=>onChange(!value)} style={{width:46,height:26,borderRadius:13,border:"none",cursor:"pointer",background:value?P.ac:"rgba(255,255,255,0.08)",position:"relative",transition:"background 0.3s"}}><div style={{width:20,height:20,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:value?23:3,transition:"left 0.3s"}}/></button>}
 function Hd({text}){return<h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,marginBottom:22,letterSpacing:0.5}}>{text}</h2>}
 function Back({onClick}){return<button onClick={onClick} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14}}>← Back</button>}
-function Logo({size=24,style:sx={}}){const s=size;return<svg width={s} height={s*1.3} viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display:"inline-block",verticalAlign:"middle",...sx}}>
-  <path d="M14 4 Q14 2 16 2 L24 2 Q26 2 26 4" stroke="#c9a96e" strokeWidth="1.5" fill="none"/>
-  <ellipse cx="12" cy="5" rx="3" ry="2" stroke="#c9a96e" strokeWidth="1.2" fill="none"/>
-  <ellipse cx="20" cy="4" rx="3" ry="2" stroke="#c9a96e" strokeWidth="1.2" fill="none"/>
-  <ellipse cx="28" cy="5" rx="3" ry="2" stroke="#c9a96e" strokeWidth="1.2" fill="none"/>
-  <path d="M9 5 Q6 5 5 7 Q4 9 6 10" stroke="#c9a96e" strokeWidth="1.2" fill="none"/>
-  <path d="M31 5 Q34 5 35 7 Q36 9 34 10" stroke="#c9a96e" strokeWidth="1.2" fill="none"/>
-  <line x1="20" y1="6" x2="20" y2="16" stroke="#c9a96e" strokeWidth="1.5"/>
-  <path d="M20 16 L12 22 L14 34 L20 38 L26 34 L28 22 Z" fill="#1a0a05" stroke="#c9a96e" strokeWidth="1.5" strokeLinejoin="round"/>
-  <path d="M20 18 L14 23 L15.5 32 L20 35 L24.5 32 L26 23 Z" fill="#8b1a1a"/>
-  <path d="M20 18 L14 23 L20 27 Z" fill="#c02020" opacity="0.9"/>
-  <path d="M20 18 L26 23 L20 27 Z" fill="#a01515" opacity="0.9"/>
-  <path d="M14 23 L15.5 32 L20 27 Z" fill="#901818" opacity="0.8"/>
-  <path d="M26 23 L24.5 32 L20 27 Z" fill="#7a1010" opacity="0.8"/>
-  <path d="M15.5 32 L20 35 L20 27 Z" fill="#b01818" opacity="0.7"/>
-  <path d="M24.5 32 L20 35 L20 27 Z" fill="#950e0e" opacity="0.7"/>
-  <path d="M17 20 L16 22 L18 21.5 Z" fill="rgba(255,200,200,0.4)"/>
-  <circle cx="18" cy="24" r="0.8" fill="rgba(255,220,220,0.25)"/>
-  <path d="M20 16 L16 18 M20 16 L24 18 M12 22 L14 34 M28 22 L26 34 M14 34 L20 38 M26 34 L20 38" stroke="#d4b06a" strokeWidth="0.5" opacity="0.4"/>
-</svg>}
+function Logo({size=24,glow=true,style:sx={}}){const s=size;const w=s*1.1;const h=s*1.0;
+  return<div style={{display:"inline-block",verticalAlign:"middle",animation:glow?"rubyGlow 3s ease-in-out infinite":"none",...sx}}>
+  <svg width={w} height={h} viewBox="0 0 100 90" style={{display:"block",animation:glow?"rubyFloat 6s ease-in-out infinite":"none"}}>
+  <rect x="8" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-12,11.5,5.5)"/>
+  <rect x="14" y="2.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(5,17.5,5)"/>
+  <rect x="20" y="3.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-8,23.5,6)"/>
+  <rect x="26" y="5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(12,29.5,7.5)"/>
+  <rect x="31" y="7.5" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(30,34,10)"/>
+  <rect x="35" y="11" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(55,38,13.5)"/>
+  <rect x="39" y="15" width="5" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(75,41.5,17.5)"/>
+  <rect x="67" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(12,70.5,5.5)"/>
+  <rect x="73" y="2.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-5,76.5,5)"/>
+  <rect x="79" y="3.5" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(8,82.5,6)"/>
+  <rect x="85" y="3" width="7" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-6,88.5,5.5)"/>
+  <rect x="62" y="5" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-30,65,7.5)"/>
+  <rect x="58" y="9" width="6" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-55,61,11.5)"/>
+  <rect x="54" y="13" width="5" height="5" rx="2.5" fill="none" stroke="#c9a96e" strokeWidth="1.8" transform="rotate(-75,56.5,15.5)"/>
+  <path d="M44 20 L50 26 L56 20" stroke="#c9a96e" strokeWidth="2.2" fill="none" strokeLinejoin="round"/>
+  <circle cx="45.5" cy="21" r="0.8" fill="#c9a96e" opacity="0.5"/><circle cx="50" cy="24.5" r="0.8" fill="#c9a96e" opacity="0.5"/><circle cx="54.5" cy="21" r="0.8" fill="#c9a96e" opacity="0.5"/>
+  <line x1="50" y1="26" x2="50" y2="32" stroke="#c9a96e" strokeWidth="2"/>
+  <path d="M32 35 L36 32 L64 32 L68 35 L70 40 L70 75 L68 80 L32 80 L30 75 L30 40 Z" fill="#1a0a05" stroke="#c9a96e" strokeWidth="1.8"/>
+  <path d="M34 37 L37 34.5 L63 34.5 L66 37 L67.5 41 L67.5 73.5 L66 77 L34 77 L32.5 73.5 L32.5 41 Z" fill="#8b1a1a"/>
+  <path d="M34 37 L50 55 L66 37 L63 34.5 L37 34.5 Z" fill="#c02020" opacity="0.85"/>
+  <path d="M34 37 L32.5 41 L32.5 73.5 L50 55 Z" fill="#901818" opacity="0.8"/>
+  <path d="M66 37 L67.5 41 L67.5 73.5 L50 55 Z" fill="#7a1010" opacity="0.8"/>
+  <path d="M32.5 73.5 L34 77 L66 77 L67.5 73.5 L50 55 Z" fill="#a01515" opacity="0.75"/>
+  <path d="M36 38 L40 42 L36 46 Z" fill="rgba(255,200,200,0.18)"/>
+  <circle cx="30.3" cy="38" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="46" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="54" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="62" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="30.3" cy="70" r="1" fill="#c9a96e" opacity="0.35"/>
+  <circle cx="69.7" cy="38" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="46" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="54" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="62" r="1" fill="#c9a96e" opacity="0.35"/><circle cx="69.7" cy="70" r="1" fill="#c9a96e" opacity="0.35"/>
+  </svg></div>}
 
 function App(){
   const SB_URL="https://fmsntzbtgmecissnwbqd.supabase.co";
@@ -108,13 +123,13 @@ function App(){
   const[voices,setVoices]=useState([]);const[vLoading,setVL]=useState(false);
   const[vw,setVw]=useState("auth");const[edSc,setEdSc]=useState(null);const[edAf,setEdAf]=useState(null);
   const[playing,setPlaying]=useState(false);const[paused,setPaused]=useState(false);const[cur,setCur]=useState(null);
-  const[loopOn,setLoop]=useState(true);const[slpM,setSlpM]=useState(30);const[tLeft,setTLeft]=useState(null);
+  const[loopOn,setLoop]=useState(true);const[slpM,setSlpM]=useState(0);const[tLeft,setTLeft]=useState(null);
   const[dimmed,setDim]=useState(false);const[isAff,setIsAff]=useState(false);const[aLd,setALd]=useState(false);
   const[ss2,setSs]=useState({ambient:0,harp:0,rain:0,binaural:0,solfeggio:0});
   const[binP,setBinP]=useState(1);const[solP,setSolP]=useState(2);
   const[brAct,setBrAct]=useState(false);const[brPh,setBrPh]=useState("");const[brCt,setBrCt]=useState(0);
   const[energyPhase,setEP]=useState(false);const[energyChoice,setEC]=useState(null);
-  const[alignment,setAlignment]=useState(null);const[curTime,setCurTime]=useState(0);const[sentences,setSentences]=useState([]);
+  const[alignment,setAlignment]=useState(null);const[curTime,setCurTime]=useState(0);const[sentences,setSentences]=useState([]);const[audioDur,setAudioDur]=useState(0);
   const tOk=useRef(false);const mG=useRef(null);const ambR=useRef(null);const hpR=useRef(null);const hpI=useRef(null);
   const rnR=useRef(null);const rnF=useRef(null);const bL=useRef(null);const bR=useRef(null);const bPL=useRef(null);const bPR=useRef(null);
   const sO=useRef(null);const plR=useRef(false);const paR=useRef(false);const tmR=useRef(null);const auE=useRef(null);const seS=useRef(null);
@@ -221,19 +236,20 @@ function App(){
     if(elKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(result=>{setALd(false);if(result&&result.url&&plR.current){
       if(result.alignment){setAlignment(result.alignment);setSentences(buildSentences(scr.content,result.alignment))}
       const a=new Audio(result.url);auE.current=a;a.loop=loopOn;
-      a.ontimeupdate=()=>{setCurTime(a.currentTime)};
+      a.onloadedmetadata=()=>{setAudioDur(a.duration||0)};
+      a.ontimeupdate=()=>{setCurTime(a.currentTime);if(a.duration&&!audioDur)setAudioDur(a.duration)};
       a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;setCurTime(0);a.play()}},sett.loopGap*1000);else stopPlay(true)};
       if(!paR.current){a.play()}else{setPaused(true)}}}).catch(()=>{setALd(false);fbTTS(scr)})}
     else fbTTS(scr)}
   function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
   function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
-  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
+  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);setAudioDur(0);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
     if(log&&seS.current){const dur=Math.round((Date.now()-seS.current)/60000);logSess(cur?.title||"Session",dur,energyChoice)}}
 
   // ═══ VIEWS ═══
   function AuthVw(){const[em,sE]=useState("");const[pw,sP]=useState("");const[up,sU]=useState(false);const[ld,sL]=useState(false);const[er,sEr]=useState("");
     const go=async()=>{if(!sb)return;sL(true);sEr("");const{error}=up?await sb.auth.signUp({email:em,password:pw}):await sb.auth.signInWithPassword({email:em,password:pw});if(error)sEr(error.message);sL(false)};
-    return<div className="fi" style={{padding:22,maxWidth:380,margin:"0 auto"}}><div style={{textAlign:"center",marginTop:80,marginBottom:40}}><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:34,fontWeight:500,letterSpacing:2,background:"linear-gradient(135deg,"+P.ac+",#b8a0f0)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"flex",alignItems:"center",justifyContent:"center",gap:10}}><Logo size={24} style={{WebkitTextFillColor:"initial"}}/> Reality Portal</h1><p style={{color:P.mt,fontSize:13,marginTop:8}}>Select Your New Reality</p></div>
+    return<div className="fi" style={{padding:22,maxWidth:380,margin:"0 auto"}}><div style={{textAlign:"center",marginTop:80,marginBottom:40}}><div style={{marginBottom:10}}><Logo size={50}/></div><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:34,fontWeight:500,letterSpacing:2,color:P.ac}}>Reality Portal</h1><p style={{color:P.mt,fontSize:13,marginTop:8,fontFamily:"'Nunito',sans-serif"}}>Select Your New Reality</p></div>
       <Cd><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18,margin:"0 0 16px"}}>{up?"Create Account":"Welcome Back"}</h3><div style={{marginBottom:12}}><GI value={em} onChange={e=>sE(e.target.value)} placeholder="Email" type="email"/></div><div style={{marginBottom:16}}><GI value={pw} onChange={e=>sP(e.target.value)} placeholder="Password" type="password"/></div>
         {er&&<p style={{fontSize:12,color:P.rd,marginBottom:12}}>{er}</p>}
         <Bt onClick={go} ld={ld} disabled={!em||!pw} style={{width:"100%",marginBottom:12}}>{up?"Sign Up":"Sign In"}</Bt>
@@ -242,8 +258,8 @@ function App(){
 
   // ONBOARDING
   function OnboardVw(){return<div className="fi" style={{padding:22,maxWidth:440,margin:"0 auto",textAlign:"center"}}>
-    <div style={{marginTop:60,marginBottom:30}}><div style={{marginBottom:16}}><Logo size={48}/></div>
-      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:500,letterSpacing:1.5,background:"linear-gradient(135deg,"+P.ac+",#b8a0f0)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Welcome to Reality Portal</h1></div>
+    <div style={{marginTop:60,marginBottom:30}}><div style={{marginBottom:16}}><Logo size={70}/></div>
+      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:500,letterSpacing:1.5,color:P.ac}}>Welcome to Reality Portal</h1></div>
     <p style={{color:P.tx,fontSize:15,lineHeight:1.8,marginBottom:20}}>Reality is not fixed. It is a field that responds to your energy signature. The physical world reorganizes itself around the dominant energy you consistently hold.</p>
     <Cd style={{textAlign:"left",marginBottom:16}}><p style={{fontSize:13,color:P.gd,fontWeight:600,marginBottom:8}}>This app is your immersion system to:</p>
       <p style={{fontSize:13,color:P.tx,lineHeight:1.8,margin:0}}>1. <strong>Design</strong> your new reality in vivid detail<br/>2. <strong>Step into</strong> it through visualization and declaration<br/>3. <strong>Hold the ground</strong> with daily practice<br/>4. <strong>Let the 3D catch up</strong> — it always does</p></Cd>
@@ -251,22 +267,46 @@ function App(){
     <Bt v="gold" onClick={()=>{saveSett({...sett,skipOnboarding:true});setVw("library")}} style={{width:"100%",fontSize:16,padding:14}}>Enter the Portal</Bt></div>}
 
   // LIBRARY
-  function LibVw(){const tm=timeMode();
-    return<div className="fi"><div style={{padding:"28px 22px 0"}}><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:30,fontWeight:500,letterSpacing:1.5,background:"linear-gradient(135deg,"+P.ac+",#b8a0f0)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"flex",alignItems:"center",gap:10}}><Logo size={22} style={{WebkitTextFillColor:"initial"}}/> Reality Portal</h1>
-      <p style={{color:P.mt,fontSize:13,marginTop:4}}>Select Your New Reality {tm==="night"?"· Night Session":"· "+tm.charAt(0).toUpperCase()+tm.slice(1)+" Session"}</p></div>
-    <div style={{padding:"16px 22px"}}>
-      <div style={{display:"flex",gap:8,marginBottom:18}}><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:""});setVw("editor")}} style={{flex:1}}>+ Script</Bt><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:PHASE_TEMPLATE});setVw("editor")}} v="gold" style={{flex:1,fontSize:12}}>+ Guided 4-Phase</Bt></div>
-      <Bt v="secondary" onClick={()=>{setEdAf({title:"",content:""});setVw("affEditor")}} style={{width:"100%",marginBottom:18}}>+ Affirmation Set</Bt>
-      {scripts.length===0&&affs.length<=1&&<Cd style={{textAlign:"center",padding:36,marginBottom:16}}><div style={{fontSize:40,marginBottom:12}}>🌌</div><p style={{color:P.mt,fontSize:13,lineHeight:1.7}}>Your portal awaits. Create your first visualization script or use the guided 4-phase template to begin occupying your new reality.</p></Cd>}
-      {scripts.length>0&&<><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,marginBottom:10,color:P.ac}}>Visualization Scripts</h3>
-        {scripts.map(s=><Cd key={s.id} style={{marginBottom:8}} onClick={()=>{setCur(s);setIsAff(false);setVw("player")}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{flex:1}}><h4 style={{margin:0,fontSize:14,fontWeight:600}}>{s.title}</h4>
-            <div style={{display:"flex",gap:6,marginTop:5}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:12,background:"rgba(140,110,230,0.12)",color:"rgba(160,140,220,0.8)"}}>{s.category}</span><span style={{fontSize:10,color:P.mt}}>~{Math.ceil((s.content||"").split(" ").length/130)} min</span></div></div>
-            <div style={{display:"flex",gap:6}}><button onClick={e=>{e.stopPropagation();setEdSc({...s});setVw("editor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:14}}>✎</button><button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delSc(s.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:12,opacity:0.6}}>✕</button></div></div></Cd>)}</>}
+  function LibVw(){const tm=timeMode();const catColors={Wealth:"rgba(140,110,230",Health:"rgba(90,190,140",Identity:"rgba(90,190,190",Relationships:"rgba(220,130,170",Career:"rgba(200,170,100",Spiritual:"rgba(180,160,255",Custom:"rgba(140,110,230"};
+    const MiniPortal=({color})=><svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="17" fill="none" stroke={color+",0.1)"} strokeWidth="0.5"/><circle cx="19" cy="19" r="12" fill="none" stroke={color+",0.15)"} strokeWidth="0.5"/><circle cx="19" cy="19" r="7" fill={color+",0.08)"}/><circle cx="19" cy="19" r="2.5" fill={color+",0.3)"}/></svg>;
+    return<div className="fi">
+    <div style={{textAlign:"center",padding:"24px 22px 0",position:"relative"}}>
+      <div style={{position:"relative",display:"inline-block",marginBottom:4}}>
+        <svg width="160" height="160" viewBox="0 0 160 160" style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)"}}>
+          <circle cx="80" cy="80" r="75" fill="none" stroke="rgba(140,110,230,0.06)" strokeWidth="0.5" style={{animation:"ringPulse2 6s ease-in-out infinite"}}/>
+          <circle cx="80" cy="80" r="62" fill="none" stroke="rgba(140,110,230,0.08)" strokeWidth="0.5" style={{animation:"ringPulse 5s ease-in-out 0.5s infinite"}}/>
+          <circle cx="80" cy="80" r="48" fill="none" stroke="rgba(140,110,230,0.1)" strokeWidth="0.8" style={{animation:"ringPulse 4s ease-in-out 1s infinite"}}/>
+          <circle cx="80" cy="80" r="34" fill="none" stroke="rgba(140,110,230,0.14)" strokeWidth="0.8" style={{animation:"ringPulse3 3.5s ease-in-out infinite"}}/>
+        </svg>
+        <div style={{padding:"36px 0"}}><Logo size={60}/></div>
+      </div>
+      <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:28,fontWeight:500,letterSpacing:1.5,color:P.ac,margin:0}}>Reality Portal</h1>
+      <p style={{color:P.mt,fontSize:12,marginTop:4,fontFamily:"'Nunito',sans-serif"}}>Select Your New Reality {tm==="night"?"· Night Session":"· "+tm.charAt(0).toUpperCase()+tm.slice(1)+" Session"}</p>
+    </div>
+    <div style={{padding:"14px 22px"}}>
+      <div style={{display:"flex",gap:8,marginBottom:14}}><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:""});setVw("editor")}} style={{flex:1}}>+ Script</Bt><Bt onClick={()=>{setEdSc({title:"",category:"Wealth",content:PHASE_TEMPLATE});setVw("editor")}} v="gold" style={{flex:1,fontSize:12}}>+ Guided 4-Phase</Bt></div>
+      <Bt v="secondary" onClick={()=>{setEdAf({title:"",content:""});setVw("affEditor")}} style={{width:"100%",marginBottom:16}}>+ Affirmation Set</Bt>
+      {scripts.length===0&&affs.length<=1&&<Cd style={{textAlign:"center",padding:30,marginBottom:14}}><p style={{color:P.mt,fontSize:13,lineHeight:1.7,fontFamily:"'Nunito',sans-serif"}}>Your portal awaits. Create your first visualization script to begin occupying your new reality.</p></Cd>}
+      {scripts.length>0&&<>
+        <p style={{fontSize:11,color:P.gd,margin:"0 0 10px",letterSpacing:0.8,fontFamily:"'Nunito',sans-serif"}}>Select which scene you would like to step into</p>
+        {scripts.map(s=>{const cc=catColors[s.category]||catColors.Custom;return<Cd key={s.id} style={{marginBottom:8,padding:14,display:"flex",alignItems:"center",gap:12}} onClick={()=>{setCur(s);setIsAff(false);setVw("player")}}>
+          <MiniPortal color={cc}/>
+          <div style={{flex:1}}><h4 style={{margin:0,fontSize:14,fontWeight:600,fontFamily:"'Nunito',sans-serif"}}>{s.title}</h4>
+            <p style={{margin:"3px 0 0",fontSize:10,color:cc+",0.5)",fontFamily:"'Nunito',sans-serif"}}>{s.category} · ~{Math.ceil((s.content||"").split(" ").length/130)} min</p></div>
+          <div style={{display:"flex",gap:6,alignItems:"center"}}>
+            <button onClick={e=>{e.stopPropagation();setEdSc({...s});setVw("editor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:13}}>✎</button>
+            <button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delSc(s.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:11,opacity:0.5}}>✕</button>
+            <div style={{width:30,height:30,borderRadius:"50%",background:"rgba(180,40,40,0.1)",border:"1px solid rgba(180,40,40,0.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(200,100,100,0.7)",fontSize:11}}>▶</div>
+          </div></Cd>})}
+      </>}
       {affs.length>0&&<><h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,margin:"16px 0 10px",color:P.tl}}>Declarations & Affirmations</h3>
         {affs.map(a=><Cd key={a.id} style={{marginBottom:8}} onClick={()=>{setCur(a);setIsAff(true);setVw("player")}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h4 style={{margin:0,fontSize:14,fontWeight:600}}>{a.title}</h4><span style={{fontSize:10,color:P.mt}}>{(a.content||"").split("\n").filter(l=>l.trim()).length} declarations</span></div>
-            <div style={{display:"flex",gap:6}}><button onClick={e=>{e.stopPropagation();setEdAf({...a});setVw("affEditor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:14}}>✎</button><button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delAf(a.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:12,opacity:0.6}}>✕</button></div></div></Cd>)}</>}
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h4 style={{margin:0,fontSize:14,fontWeight:600,fontFamily:"'Nunito',sans-serif"}}>{a.title}</h4><span style={{fontSize:10,color:P.mt,fontFamily:"'Nunito',sans-serif"}}>{(a.content||"").split("\n").filter(l=>l.trim()).length} declarations</span></div>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              <button onClick={e=>{e.stopPropagation();setEdAf({...a});setVw("affEditor")}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:13}}>✎</button>
+              <button onClick={e=>{e.stopPropagation();if(confirm("Delete?"))delAf(a.id)}} style={{background:"none",border:"none",color:P.rd,cursor:"pointer",fontSize:11,opacity:0.5}}>✕</button>
+              <div style={{width:30,height:30,borderRadius:"50%",background:"rgba(180,40,40,0.1)",border:"1px solid rgba(180,40,40,0.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(200,100,100,0.7)",fontSize:11}}>▶</div>
+            </div></div></Cd>)}</>}
     </div></div>}
 
   // EDITOR
@@ -350,11 +390,18 @@ function App(){
     if(brAct)return<div style={{height:"100vh",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",background:"rgba(4,6,16,0.96)"}}><div style={{width:180,height:180,borderRadius:"50%",border:"2px solid rgba(140,110,230,0.2)",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",animation:brPh==="Breathe In"?"pulseGrow 4s ease-in-out":brPh==="Breathe Out"?"pulseShrink 4s ease-in-out":"none",boxShadow:"0 0 80px rgba(140,110,230,0.15)"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,color:P.ac}}>{brPh}</span><span style={{fontSize:40,fontWeight:300,marginTop:8}}>{brCt}</span></div>
       <button onClick={()=>{setBrAct(false);beginAudio(cur,isAff)}} style={{background:"none",border:"none",color:P.mt,cursor:"pointer",fontSize:12,marginTop:24}}>Skip breathing →</button></div>;
 
-    return<div style={{height:"100vh",display:"flex",flexDirection:"column",overflow:"auto",background:dimmed&&playing?"#020308":P.bg,transition:"background 2s"}}>
-      <div style={{padding:"20px 22px 0",opacity:dimmed&&playing?0.3:1,transition:"opacity 2s"}}><button onClick={()=>{if(playing)stopPlay(true);setVw("library");setIsAff(false)}} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14}}>← Library</button></div>
-      {cur&&<div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:22,textAlign:"center",opacity:dimmed&&playing?0.2:1,transition:"opacity 2s"}}>
+    return<div style={{height:"100vh",display:"flex",flexDirection:"column",overflow:"auto",background:dimmed&&playing?"#020308":P.bg,transition:"background 2s",position:"relative"}}>
+      <svg width="100%" height="100%" viewBox="0 0 400 800" style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:0}} preserveAspectRatio="xMidYMid slice">
+        <circle cx="200" cy="280" r="350" fill="none" stroke="rgba(140,110,230,0.03)" strokeWidth="0.5" style={{animation:"ringPulse2 8s ease-in-out infinite"}}/>
+        <circle cx="200" cy="280" r="280" fill="none" stroke="rgba(140,110,230,0.04)" strokeWidth="0.5" style={{animation:"ringPulse 7s ease-in-out 0.5s infinite"}}/>
+        <circle cx="200" cy="280" r="210" fill="none" stroke="rgba(140,110,230,0.06)" strokeWidth="0.8" style={{animation:"ringPulse 6s ease-in-out 1s infinite"}}/>
+        <circle cx="200" cy="280" r="140" fill="none" stroke="rgba(140,110,230,0.08)" strokeWidth="0.8" style={{animation:"ringPulse3 5s ease-in-out infinite"}}/>
+        <circle cx="200" cy="280" r="80" fill="rgba(140,110,230,0.02)" stroke="rgba(140,110,230,0.1)" strokeWidth="0.8" style={{animation:"ringPulse3 4s ease-in-out infinite"}}/>
+      </svg>
+      <div style={{position:"relative",zIndex:1,padding:"20px 22px 0",opacity:dimmed&&playing?0.3:1,transition:"opacity 2s"}}><button onClick={()=>{if(playing)stopPlay(true);setVw("library");setIsAff(false)}} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14,fontFamily:"'Nunito',sans-serif"}}>← Library</button></div>
+      {cur&&<div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:22,textAlign:"center",opacity:dimmed&&playing?0.2:1,transition:"opacity 2s",position:"relative",zIndex:1}}>
         {(!playing||sentences.length===0)&&<>
-        <div style={{width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(140,110,230,0.15),transparent 70%)",border:"1px solid rgba(140,110,230,0.15)",display:"flex",justifyContent:"center",alignItems:"center",marginBottom:24,animation:playing&&!paused?"breathe 6s ease-in-out infinite":"none"}}><span style={{fontSize:36}}>{isAff?<Logo size={32}/>:"🌌"}</span></div>
+        <div style={{marginBottom:20}}><Logo size={50}/></div>
         <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,letterSpacing:1}}>{cur.title}</h2></>}
         {aLd&&<div style={{marginTop:14,textAlign:"center"}}><div style={{display:"inline-block",animation:"spin 2s linear infinite",marginBottom:8}}><Logo size={24}/></div><p style={{fontSize:14,color:P.ac,margin:0}}>Generating voice...</p><p style={{fontSize:11,color:P.mt,marginTop:4}}>This may take a moment for longer scripts</p></div>}
         {playing&&!aLd&&sentences.length===0&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
@@ -374,16 +421,20 @@ function App(){
           </div>
         </div>})()}
         {playing&&!aLd&&sentences.length>0&&<p style={{fontSize:11,color:P.mt,marginTop:8,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
+        {playing&&!aLd&&audioDur>0&&<div style={{width:"100%",maxWidth:200,margin:"12px auto 0",opacity:0.3}}>
+          <div style={{width:"100%",height:1.5,background:"rgba(140,110,230,0.08)",borderRadius:1,overflow:"hidden"}}>
+            <div style={{width:(curTime/audioDur*100)+"%",height:"100%",background:"rgba(140,110,230,0.4)",borderRadius:1,transition:"width 0.3s linear"}}/></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:3}}><span style={{fontSize:9,color:"rgba(160,140,200,0.4)",fontFamily:"monospace"}}>{fmt(Math.floor(curTime))}</span><span style={{fontSize:9,color:"rgba(160,140,200,0.4)",fontFamily:"monospace"}}>{fmt(Math.floor(audioDur))}</span></div></div>}
         {tLeft!==null&&<div style={{marginTop:8,fontSize:14,color:P.mt,fontFamily:"monospace"}}>⏱ {fmt(tLeft)}</div>}</div>}
-      <div style={{padding:"0 22px 16px",opacity:dimmed&&playing?0.25:1,transition:"opacity 2s"}}>
+      <div style={{padding:"0 22px 16px",opacity:dimmed&&playing?0.25:1,transition:"opacity 2s",position:"relative",zIndex:1}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:24,marginBottom:18}}>
           <button onClick={()=>setLoop(!loopOn)} style={{background:"none",border:"none",color:loopOn?P.ac:P.mt,cursor:"pointer",fontSize:20}}>🔁</button>
-          {!playing?<button onClick={()=>cur&&startPlay(cur,isAff)} disabled={!cur} style={{width:64,height:64,borderRadius:"50%",border:"none",background:"linear-gradient(135deg,"+P.ac+","+P.ad+")",color:"#fff",fontSize:24,cursor:"pointer",boxShadow:"0 0 40px rgba(140,110,230,0.25)"}}>▶</button>
-            :<div style={{display:"flex",gap:14}}><button onClick={togPause} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(140,110,230,0.3)",background:"transparent",color:P.ac,fontSize:18,cursor:"pointer"}}>{paused?"▶":"⏸"}</button><button onClick={()=>stopPlay(true)} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(196,92,92,0.3)",background:"transparent",color:P.rd,fontSize:18,cursor:"pointer"}}>⏹</button></div>}
+          {!playing?<button onClick={()=>cur&&startPlay(cur,isAff)} disabled={!cur} style={{width:64,height:64,borderRadius:"50%",border:"none",background:"linear-gradient(135deg,rgba(180,40,40,0.8),rgba(140,20,20,0.9))",color:"rgba(255,200,200,0.9)",fontSize:24,cursor:"pointer",boxShadow:"0 0 40px rgba(180,40,40,0.2)"}}>▶</button>
+            :<div style={{display:"flex",gap:14}}><button onClick={togPause} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(180,40,40,0.3)",background:"transparent",color:"rgba(200,120,120,0.7)",fontSize:18,cursor:"pointer"}}>{paused?"▶":"⏸"}</button><button onClick={()=>stopPlay(true)} style={{width:52,height:52,borderRadius:"50%",border:"2px solid rgba(196,92,92,0.3)",background:"transparent",color:P.rd,fontSize:18,cursor:"pointer"}}>⏹</button></div>}
           <button onClick={()=>setDim(!dimmed)} style={{background:"none",border:"none",color:dimmed?P.ac:P.mt,cursor:"pointer",fontSize:18}}>{dimmed?"☀":"🌑"}</button></div>
-        {!playing&&<div style={{marginBottom:14}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:6}}>Sleep Timer</label><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-          {TIMERS.map(t=><button key={t} onClick={()=>setSlpM(t)} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===t?P.ac:P.gb),background:slpM===t?"rgba(140,110,230,0.15)":"transparent",color:slpM===t?P.ac:P.mt}}>{t}m</button>)}
-          <button onClick={()=>setSlpM(0)} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===0?P.tl:P.gb),background:slpM===0?"rgba(90,190,190,0.1)":"transparent",color:slpM===0?P.tl:P.mt}}>∞</button></div></div>}
+        <div style={{marginBottom:14}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:6}}>Sleep Timer {tLeft!==null&&<span style={{color:P.ac,fontFamily:"monospace"}}> · {fmt(tLeft)} remaining</span>}</label><div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+          {TIMERS.map(t=><button key={t} onClick={()=>{setSlpM(t);if(playing){if(tmR.current)clearInterval(tmR.current);const end=Date.now()+t*60000;setTLeft(t*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===t?P.ac:P.gb),background:slpM===t?"rgba(140,110,230,0.15)":"transparent",color:slpM===t?P.ac:P.mt}}>{t}m</button>)}
+          <button onClick={()=>{setSlpM(0);if(playing&&tmR.current){clearInterval(tmR.current);tmR.current=null;setTLeft(null);if(mG.current)mG.current.gain.value=1}}} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(slpM===0?P.tl:P.gb),background:slpM===0?"rgba(90,190,190,0.1)":"transparent",color:slpM===0?P.tl:P.mt}}>∞</button></div></div>
         <Cd><h4 style={{margin:"0 0 12px",fontSize:14,fontFamily:"'Cormorant Garamond',serif",color:P.ac}}>Soundscape</h4>
           <Sl l="Ambient" ic="🌊" v={ss2.ambient} onChange={v=>setSs(p=>({...p,ambient:v}))}/>
           <Sl l="Harp" ic="🎵" v={ss2.harp} onChange={v=>setSs(p=>({...p,harp:v}))}/>
@@ -421,7 +472,7 @@ function App(){
   // NAV
   const nav=[{id:"library",ic:"📖",l:"Library"},{id:"blueprint",ic:"🏗",l:"Blueprint"},{id:"evidence",ic:"amulet",l:"Evidence"},{id:"log",ic:"📊",l:"Log"},{id:"settings",ic:"⚙",l:"Settings"}];
   const showNav=!playing&&!["editor","affEditor","auth","onboarding"].includes(vw)&&user;
-  const rv=()=>{if(aLoading)return<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}><div style={{textAlign:"center"}}><div style={{animation:"spin 2s linear infinite",display:"inline-block"}}><Logo size={28}/></div><p style={{color:P.mt,marginTop:12}}>Opening portal...</p></div></div>;
+  const rv=()=>{if(aLoading)return<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}><div style={{textAlign:"center"}}><Logo size={50}/><p style={{color:P.mt,marginTop:16,fontFamily:"'Nunito',sans-serif"}}>Opening portal...</p></div></div>;
     switch(vw){case "auth":return<AuthVw/>;case "onboarding":return<OnboardVw/>;case "library":return<LibVw/>;case "editor":return<EdVw/>;case "affEditor":return<AffEdVw/>;case "blueprint":return<BpVw/>;case "evidence":return<EvVw/>;case "log":return<LogVw/>;case "player":return<PlayerVw/>;case "settings":return<SettVw/>;default:return<LibVw/>}};
 
   return<div style={{height:"100vh",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative"}}>
