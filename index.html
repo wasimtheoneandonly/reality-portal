@@ -97,13 +97,16 @@ function Logo({size=24,style:sx={}}){const s=size;return<svg width={s} height={s
 </svg>}
 
 function App(){
-  const[cfg,setCfg]=useState(()=>ls("config",{supabaseUrl:"",supabaseKey:"",elevenLabsKey:""}));
-  const[sb,setSb]=useState(null);const[user,setUser]=useState(null);const[aLoading,setAL]=useState(true);
+  const SB_URL="https://fmsntzbtgmecissnwbqd.supabase.co";
+  const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtc250emJ0Z21lY2lzc253YnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMDY5MDMsImV4cCI6MjA5MzY4MjkwM30.-zzYzt_3yWji4OJioCNDD-0fgW0Cel28Lpbf9t4sYMc";
+  const[elKey,setElKey]=useState(()=>ls("elkey",""));
+  const[sb]=useState(()=>window.supabase.createClient(SB_URL,SB_KEY));
+  const[user,setUser]=useState(null);const[aLoading,setAL]=useState(true);
   const[scripts,setSc]=useState([]);const[affs,setAf]=useState([]);const[sessions,setSe]=useState([]);
   const[blueprint,setBp]=useState({});const[evidence,setEv]=useState([]);
   const[sett,setSett]=useState({genderPref:"female",speechRate:0.82,speechPitch:0.95,pauseBetweenSentences:1200,loopGap:45,breathingEnabled:true,breathingPattern:0,elevenLabsVoiceId:"",elevenLabsVoiceName:"",skipEnergyCheckin:false,skipOnboarding:false});
   const[voices,setVoices]=useState([]);const[vLoading,setVL]=useState(false);
-  const[vw,setVw]=useState("setup");const[edSc,setEdSc]=useState(null);const[edAf,setEdAf]=useState(null);
+  const[vw,setVw]=useState("auth");const[edSc,setEdSc]=useState(null);const[edAf,setEdAf]=useState(null);
   const[playing,setPlaying]=useState(false);const[paused,setPaused]=useState(false);const[cur,setCur]=useState(null);
   const[loopOn,setLoop]=useState(true);const[slpM,setSlpM]=useState(30);const[tLeft,setTLeft]=useState(null);
   const[dimmed,setDim]=useState(false);const[isAff,setIsAff]=useState(false);const[aLd,setALd]=useState(false);
@@ -116,9 +119,10 @@ function App(){
   const sO=useRef(null);const plR=useRef(false);const paR=useRef(false);const tmR=useRef(null);const auE=useRef(null);const seS=useRef(null);
 
   // Supabase init
-  useEffect(()=>{if(cfg.supabaseUrl&&cfg.supabaseKey){try{const c=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);setSb(c);
-    c.auth.getSession().then(({data})=>{setUser(data.session?.user||null);setAL(false);setVw(data.session?.user?"library":"auth")});
-    c.auth.onAuthStateChange((ev,s)=>{setUser(s?.user||null);if(s?.user)setVw("library")})}catch(e){setAL(false)}}else{setAL(false);setVw("setup")}},[cfg.supabaseUrl,cfg.supabaseKey]);
+  useEffect(()=>{
+    sb.auth.getSession().then(({data})=>{setUser(data.session?.user||null);setAL(false);setVw(data.session?.user?"library":"auth")});
+    sb.auth.onAuthStateChange((ev,s)=>{setUser(s?.user||null);if(s?.user)setVw("library")});
+  },[]);
 
   // Load data
   useEffect(()=>{if(!sb||!user)return;(async()=>{
@@ -130,11 +134,13 @@ function App(){
     if(bp){const m={};bp.forEach(r=>m[r.domain]=r);setBp(m)}
     const{data:ev}=await sb.from("evidence_journal").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(ev)setEv(ev);
     const{data:st}=await sb.from("user_settings").select("*").eq("user_id",user.id).single();
-    if(st)setSett(p=>({...p,genderPref:st.gender_pref||p.genderPref,speechRate:st.speech_rate||p.speechRate,speechPitch:st.speech_pitch||p.speechPitch,loopGap:st.loop_gap||p.loopGap,breathingEnabled:st.breathing_enabled??true,breathingPattern:st.breathing_pattern??0,elevenLabsVoiceId:st.elevenlabs_voice_id||"",elevenLabsVoiceName:st.elevenlabs_voice_name||"",skipEnergyCheckin:st.skip_energy_checkin??false,skipOnboarding:st.skip_onboarding??false}));
+    if(st){setSett(p=>({...p,genderPref:st.gender_pref||p.genderPref,speechRate:st.speech_rate||p.speechRate,speechPitch:st.speech_pitch||p.speechPitch,loopGap:st.loop_gap||p.loopGap,breathingEnabled:st.breathing_enabled??true,breathingPattern:st.breathing_pattern??0,elevenLabsVoiceId:st.elevenlabs_voice_id||"",elevenLabsVoiceName:st.elevenlabs_voice_name||"",skipEnergyCheckin:st.skip_energy_checkin??false,skipOnboarding:st.skip_onboarding??false}));
+      if(st.elevenlabs_api_key){setElKey(st.elevenlabs_api_key);ss("elkey",st.elevenlabs_api_key)}}
     else if(!sett.skipOnboarding)setVw("onboarding");
   })()},[sb,user]);
 
-  async function saveSett(ns){setSett(ns);if(!sb||!user)return;await sb.from("user_settings").upsert({user_id:user.id,gender_pref:ns.genderPref,speech_rate:ns.speechRate,speech_pitch:ns.speechPitch,loop_gap:ns.loopGap,breathing_enabled:ns.breathingEnabled,breathing_pattern:ns.breathingPattern,elevenlabs_voice_id:ns.elevenLabsVoiceId,elevenlabs_voice_name:ns.elevenLabsVoiceName,skip_energy_checkin:ns.skipEnergyCheckin,skip_onboarding:ns.skipOnboarding,updated_at:new Date().toISOString()})}
+  async function saveSett(ns){setSett(ns);if(!sb||!user)return;await sb.from("user_settings").upsert({user_id:user.id,gender_pref:ns.genderPref,speech_rate:ns.speechRate,speech_pitch:ns.speechPitch,loop_gap:ns.loopGap,breathing_enabled:ns.breathingEnabled,breathing_pattern:ns.breathingPattern,elevenlabs_voice_id:ns.elevenLabsVoiceId,elevenlabs_voice_name:ns.elevenLabsVoiceName,skip_energy_checkin:ns.skipEnergyCheckin,skip_onboarding:ns.skipOnboarding,elevenlabs_api_key:elKey,updated_at:new Date().toISOString()})}
+  async function saveElKey(k){setElKey(k);ss("elkey",k);if(!sb||!user)return;await sb.from("user_settings").upsert({user_id:user.id,elevenlabs_api_key:k,updated_at:new Date().toISOString()})}
   async function saveSc(f){if(!sb||!user)return;if(f.id){const{data}=await sb.from("scripts").update({title:f.title,category:f.category,content:f.content,updated_at:new Date().toISOString()}).eq("id",f.id).select().single();if(data)setSc(p=>p.map(x=>x.id===data.id?data:x))}else{const{data}=await sb.from("scripts").insert({user_id:user.id,title:f.title,category:f.category,content:f.content}).select().single();if(data)setSc(p=>[data,...p])}setVw("library")}
   async function delSc(id){await sb.from("scripts").delete().eq("id",id);setSc(p=>p.filter(x=>x.id!==id))}
   async function saveAf(f){if(!sb||!user)return;if(f.id){const{data}=await sb.from("affirmations").update({title:f.title,content:f.content,updated_at:new Date().toISOString()}).eq("id",f.id).select().single();if(data)setAf(p=>p.map(x=>x.id===data.id?data:x))}else{const{data}=await sb.from("affirmations").insert({user_id:user.id,title:f.title,content:f.content}).select().single();if(data)setAf(p=>[data,...p])}setVw("library")}
@@ -145,10 +151,10 @@ function App(){
   async function delEvidence(id){await sb.from("evidence_journal").delete().eq("id",id);setEv(p=>p.filter(x=>x.id!==id))}
 
   // ElevenLabs
-  async function fetchVc(){if(!cfg.elevenLabsKey)return;setVL(true);try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":cfg.elevenLabsKey}});const d=await r.json();setVoices(d.voices||[])}catch{}setVL(false)}
-  async function genAudio(text,sid){const vid=sett.elevenLabsVoiceId;if(!cfg.elevenLabsKey||!vid)return null;const cl=prep(text);const ch=hash(cl+vid);
+  async function fetchVc(){if(!elKey)return;setVL(true);try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":elKey}});const d=await r.json();setVoices(d.voices||[])}catch{}setVL(false)}
+  async function genAudio(text,sid){const vid=sett.elevenLabsVoiceId;if(!elKey||!vid)return null;const cl=prep(text);const ch=hash(cl+vid);
     if(sb&&user){const{data:c}=await sb.from("audio_cache").select("storage_path").eq("script_id",sid).eq("content_hash",ch).eq("voice_id",vid).single();if(c){const{data:dl}=await sb.storage.from("audio-cache").download(c.storage_path);if(dl)return URL.createObjectURL(dl)}}
-    const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":cfg.elevenLabsKey},body:JSON.stringify({text:cl,model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75,style:0.4}})});
+    const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:cl,model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75,style:0.4}})});
     if(!r.ok)return null;const blob=await r.blob();
     if(sb&&user){const path=user.id+"/"+ch+".mp3";await sb.storage.from("audio-cache").upload(path,blob,{contentType:"audio/mpeg",upsert:true});await sb.from("audio_cache").upsert({user_id:user.id,script_id:sid,content_hash:ch,voice_id:vid,storage_path:path})}
     return URL.createObjectURL(blob)}
@@ -190,7 +196,7 @@ function App(){
   function skipToPlay(){setEP(false);beginAudio(cur,isAff)}
   function beginAudio(scr,affM){
     if(slpM>0){const end=Date.now()+slpM*60000;setTLeft(slpM*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}
-    if(cfg.elevenLabsKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(url=>{setALd(false);if(url&&plR.current){const a=new Audio(url);auE.current=a;a.loop=loopOn;a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;a.play()}},sett.loopGap*1000);else stopPlay(true)};a.play()}}).catch(()=>{setALd(false);fbTTS(scr)})}
+    if(elKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(url=>{setALd(false);if(url&&plR.current){const a=new Audio(url);auE.current=a;a.loop=loopOn;a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;a.play()}},sett.loopGap*1000);else stopPlay(true)};a.play()}}).catch(()=>{setALd(false);fbTTS(scr)})}
     else fbTTS(scr)}
   function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
   function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
@@ -198,14 +204,6 @@ function App(){
     if(log&&seS.current){const dur=Math.round((Date.now()-seS.current)/60000);logSess(cur?.title||"Session",dur,energyChoice)}}
 
   // ═══ VIEWS ═══
-  function SetupVw(){const[u,sU]=useState(cfg.supabaseUrl);const[k,sK]=useState(cfg.supabaseKey);const[e,sE]=useState(cfg.elevenLabsKey);
-    return<div className="fi" style={{padding:22,maxWidth:420,margin:"0 auto"}}><div style={{textAlign:"center",marginTop:60,marginBottom:40}}><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:36,fontWeight:500,letterSpacing:2,background:"linear-gradient(135deg,"+P.ac+",#b8a0f0)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"flex",alignItems:"center",justifyContent:"center",gap:10}}><Logo size={26} style={{WebkitTextFillColor:"initial"}}/> Reality Portal</h1><p style={{color:P.mt,fontSize:13,marginTop:8}}>Configure your portal</p></div>
-      <Cd style={{marginBottom:16}}><h4 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:P.ac,margin:"0 0 14px"}}>Supabase</h4><p style={{fontSize:11,color:P.mt,marginBottom:12,lineHeight:1.6}}>Create a free project at supabase.com, run the SQL setup, then paste credentials.</p><div style={{marginBottom:10}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>Project URL</label><GI value={u} onChange={e=>sU(e.target.value)} placeholder="https://xxx.supabase.co"/></div><div><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>Anon Key</label><GI value={k} onChange={e=>sK(e.target.value)} placeholder="eyJhbGciOi..."/></div></Cd>
-      <Cd style={{marginBottom:20}}><h4 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:P.tl,margin:"0 0 14px"}}>ElevenLabs</h4><p style={{fontSize:11,color:P.mt,marginBottom:12,lineHeight:1.6}}>Optional. Enables premium AI voices.</p><GI value={e} onChange={e=>sE(e.target.value)} placeholder="sk_..." type="password"/></Cd>
-      <Bt onClick={()=>{const c={supabaseUrl:u.trim(),supabaseKey:k.trim(),elevenLabsKey:e.trim()};ss("config",c);setCfg(c)}} disabled={!u.trim()||!k.trim()} style={{width:"100%"}}>Connect Portal</Bt>
-      <button onClick={()=>{if(u.trim()&&k.trim()){const c={supabaseUrl:u.trim(),supabaseKey:k.trim(),elevenLabsKey:e.trim()};ss("config",c);setCfg(c);setTimeout(()=>setVw("auth"),100)}else{setVw("auth")}}} style={{background:"none",border:"none",color:P.ac,fontSize:13,cursor:"pointer",width:"100%",textAlign:"center",marginTop:16}}>Already have an account? Sign in →</button>
-      </div>}
-
   function AuthVw(){const[em,sE]=useState("");const[pw,sP]=useState("");const[up,sU]=useState(false);const[ld,sL]=useState(false);const[er,sEr]=useState("");
     const go=async()=>{if(!sb)return;sL(true);sEr("");const{error}=up?await sb.auth.signUp({email:em,password:pw}):await sb.auth.signInWithPassword({email:em,password:pw});if(error)sEr(error.message);sL(false)};
     return<div className="fi" style={{padding:22,maxWidth:380,margin:"0 auto"}}><div style={{textAlign:"center",marginTop:80,marginBottom:40}}><h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:34,fontWeight:500,letterSpacing:2,background:"linear-gradient(135deg,"+P.ac+",#b8a0f0)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"flex",alignItems:"center",justifyContent:"center",gap:10}}><Logo size={24} style={{WebkitTextFillColor:"initial"}}/> Reality Portal</h1><p style={{color:P.mt,fontSize:13,marginTop:8}}>Select Your New Reality</p></div>
@@ -213,7 +211,7 @@ function App(){
         {er&&<p style={{fontSize:12,color:P.rd,marginBottom:12}}>{er}</p>}
         <Bt onClick={go} ld={ld} disabled={!em||!pw} style={{width:"100%",marginBottom:12}}>{up?"Sign Up":"Sign In"}</Bt>
         <button onClick={()=>{sU(!up);sEr("")}} style={{background:"none",border:"none",color:P.ac,fontSize:13,cursor:"pointer",width:"100%",textAlign:"center"}}>{up?"Have an account? Sign in":"New? Create account"}</button></Cd>
-      <button onClick={()=>setVw("setup")} style={{background:"none",border:"none",color:P.mt,fontSize:12,cursor:"pointer",marginTop:16,display:"block",textAlign:"center",width:"100%"}}>Change settings</button></div>}
+      </div>}
 
   // ONBOARDING
   function OnboardVw(){return<div className="fi" style={{padding:22,maxWidth:440,margin:"0 auto",textAlign:"center"}}>
@@ -354,15 +352,19 @@ function App(){
 
   // SETTINGS
   function SettVw(){
-    const pv=async(vid)=>{if(!cfg.elevenLabsKey||!vid)return;try{const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":cfg.elevenLabsKey},body:JSON.stringify({text:"Close your eyes and step into the reality you were born to live.",model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75}})});if(r.ok){const b=await r.blob();new Audio(URL.createObjectURL(b)).play()}}catch{}};
+    const pv=async(vid)=>{if(!elKey||!vid)return;try{const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:"Close your eyes and step into the reality you were born to live.",model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75}})});if(r.ok){const b=await r.blob();new Audio(URL.createObjectURL(b)).play()}}catch{}};
     return<div className="fi" style={{padding:22}}><Hd text="Settings"/>
       <Cd style={{marginBottom:14}}><h4 style={{margin:"0 0 12px",fontSize:14,color:P.ac,fontFamily:"'Cormorant Garamond',serif"}}>Voice</h4>
-        {cfg.elevenLabsKey?<><Bt v="secondary" onClick={fetchVc} ld={vLoading} style={{width:"100%",marginBottom:12}}>{voices.length?"Refresh ("+voices.length+")":"Load Voices"}</Bt>
+        <div style={{marginBottom:12}}><label style={{fontSize:11,color:P.mt,display:"block",marginBottom:4}}>ElevenLabs API Key</label>
+          <div style={{display:"flex",gap:6}}><GI value={elKey} onChange={e=>setElKey(e.target.value)} placeholder="sk_..." type="password" style={{flex:1}}/>
+            <Bt v="secondary" onClick={()=>saveElKey(elKey)} style={{padding:"10px 14px",fontSize:12}}>Save</Bt></div>
+          {elKey&&<p style={{fontSize:10,color:P.tl,marginTop:4}}>Key saved — syncs to all your devices</p>}</div>
+        {elKey?<><Bt v="secondary" onClick={fetchVc} ld={vLoading} style={{width:"100%",marginBottom:12}}>{voices.length?"Refresh ("+voices.length+")":"Load Voices"}</Bt>
           {voices.length>0&&<div style={{maxHeight:220,overflow:"auto",marginBottom:10}}>{voices.map(v=><div key={v.voice_id} onClick={()=>saveSett({...sett,elevenLabsVoiceId:v.voice_id,elevenLabsVoiceName:v.name})} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,marginBottom:3,cursor:"pointer",background:sett.elevenLabsVoiceId===v.voice_id?"rgba(140,110,230,0.15)":P.glass,border:"1px solid "+(sett.elevenLabsVoiceId===v.voice_id?P.ac:P.gb)}}>
             <div><p style={{margin:0,fontSize:12,fontWeight:sett.elevenLabsVoiceId===v.voice_id?600:400}}>{v.name}</p><p style={{margin:0,fontSize:9,color:P.mt}}>{v.labels?.gender||""} · {v.labels?.accent||""}</p></div>
             <button onClick={e=>{e.stopPropagation();pv(v.voice_id)}} style={{background:"none",border:"1px solid "+P.gb,color:P.ac,padding:"3px 8px",borderRadius:6,fontSize:10,cursor:"pointer"}}>▶</button></div>)}</div>}
           {sett.elevenLabsVoiceName&&<p style={{fontSize:11,color:P.ac}}>Selected: {sett.elevenLabsVoiceName}</p>}
-        </>:<p style={{fontSize:12,color:P.mt}}>Add ElevenLabs key in setup for premium voices.</p>}</Cd>
+        </>:<p style={{fontSize:12,color:P.mt}}>Enter your ElevenLabs API key above to enable premium voices.</p>}</Cd>
       <Cd style={{marginBottom:14}}><h4 style={{margin:"0 0 12px",fontSize:14,color:P.ac,fontFamily:"'Cormorant Garamond',serif"}}>Session Flow</h4>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><span style={{fontSize:12,color:P.mt}}>Skip energy check-in</span><Tg value={sett.skipEnergyCheckin} onChange={v=>saveSett({...sett,skipEnergyCheckin:v})}/></div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><span style={{fontSize:12,color:P.mt}}>Breathing pacer</span><Tg value={sett.breathingEnabled} onChange={v=>saveSett({...sett,breathingEnabled:v})}/></div>
@@ -370,13 +372,13 @@ function App(){
         <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{BRTH.map((b,i)=><button key={i} onClick={()=>saveSett({...sett,breathingPattern:i})} style={{padding:"5px 11px",borderRadius:20,fontSize:11,cursor:"pointer",border:"1px solid "+(sett.breathingPattern===i?P.tl:P.gb),background:sett.breathingPattern===i?"rgba(90,190,190,0.1)":"transparent",color:sett.breathingPattern===i?P.tl:P.mt}}>{b.n}</button>)}</div></Cd>
       <Cd><h4 style={{margin:"0 0 10px",fontSize:14,color:P.mt,fontFamily:"'Cormorant Garamond',serif"}}>Account</h4>
         <p style={{fontSize:11,color:P.mt,marginBottom:8}}>{user?.email}</p>
-        <div style={{display:"flex",gap:6}}><Bt v="secondary" onClick={()=>setVw("setup")} style={{flex:1}}>Config</Bt><Bt v="danger" onClick={async()=>{await sb?.auth.signOut();setVw("auth")}} style={{flex:1}}>Sign Out</Bt></div></Cd></div>}
+        <Bt v="danger" onClick={async()=>{await sb?.auth.signOut();setVw("auth")}} style={{width:"100%"}}>Sign Out</Bt></Cd></div>}
 
   // NAV
   const nav=[{id:"library",ic:"📖",l:"Library"},{id:"blueprint",ic:"🏗",l:"Blueprint"},{id:"evidence",ic:"amulet",l:"Evidence"},{id:"log",ic:"📊",l:"Log"},{id:"settings",ic:"⚙",l:"Settings"}];
-  const showNav=!playing&&!["editor","affEditor","setup","auth","onboarding"].includes(vw)&&user;
+  const showNav=!playing&&!["editor","affEditor","auth","onboarding"].includes(vw)&&user;
   const rv=()=>{if(aLoading)return<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}><div style={{textAlign:"center"}}><div style={{animation:"spin 2s linear infinite",display:"inline-block"}}><Logo size={28}/></div><p style={{color:P.mt,marginTop:12}}>Opening portal...</p></div></div>;
-    switch(vw){case "setup":return<SetupVw/>;case "auth":return<AuthVw/>;case "onboarding":return<OnboardVw/>;case "library":return<LibVw/>;case "editor":return<EdVw/>;case "affEditor":return<AffEdVw/>;case "blueprint":return<BpVw/>;case "evidence":return<EvVw/>;case "log":return<LogVw/>;case "player":return<PlayerVw/>;case "settings":return<SettVw/>;default:return<LibVw/>}};
+    switch(vw){case "auth":return<AuthVw/>;case "onboarding":return<OnboardVw/>;case "library":return<LibVw/>;case "editor":return<EdVw/>;case "affEditor":return<AffEdVw/>;case "blueprint":return<BpVw/>;case "evidence":return<EvVw/>;case "log":return<LogVw/>;case "player":return<PlayerVw/>;case "settings":return<SettVw/>;default:return<LibVw/>}};
 
   return<div style={{height:"100vh",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative"}}>
     <Stars/><Nebs/>
