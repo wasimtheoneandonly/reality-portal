@@ -114,6 +114,7 @@ function App(){
   const[binP,setBinP]=useState(1);const[solP,setSolP]=useState(2);
   const[brAct,setBrAct]=useState(false);const[brPh,setBrPh]=useState("");const[brCt,setBrCt]=useState(0);
   const[energyPhase,setEP]=useState(false);const[energyChoice,setEC]=useState(null);
+  const[alignment,setAlignment]=useState(null);const[curTime,setCurTime]=useState(0);const[sentences,setSentences]=useState([]);
   const tOk=useRef(false);const mG=useRef(null);const ambR=useRef(null);const hpR=useRef(null);const hpI=useRef(null);
   const rnR=useRef(null);const rnF=useRef(null);const bL=useRef(null);const bR=useRef(null);const bPL=useRef(null);const bPR=useRef(null);
   const sO=useRef(null);const plR=useRef(false);const paR=useRef(false);const tmR=useRef(null);const auE=useRef(null);const seS=useRef(null);
@@ -152,12 +153,33 @@ function App(){
 
   // ElevenLabs
   async function fetchVc(){if(!elKey)return;setVL(true);try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":elKey}});const d=await r.json();setVoices(d.voices||[])}catch{}setVL(false)}
+  function buildSentences(text,al){
+    if(!al||!al.characters)return[];
+    const fullText=al.characters.join("");const starts=al.character_start_times_seconds;const ends=al.character_end_times_seconds;
+    const sents=[];let cur="",sIdx=0;
+    for(let i=0;i<fullText.length;i++){
+      cur+=fullText[i];
+      if(fullText[i]==="."||fullText[i]==="!"||fullText[i]==="?"||i===fullText.length-1){
+        const trimmed=cur.trim();
+        if(trimmed.length>3){sents.push({text:trimmed,start:starts[sIdx],end:ends[i]})}
+        cur="";sIdx=i+1;
+      }
+    }
+    if(sents.length===0&&fullText.trim()){sents.push({text:fullText.trim(),start:starts[0],end:ends[ends.length-1]})}
+    return sents;
+  }
   async function genAudio(text,sid){const vid=sett.elevenLabsVoiceId;if(!elKey||!vid)return null;const cl=prep(text);const ch=hash(cl+vid);
-    if(sb&&user){const{data:c}=await sb.from("audio_cache").select("storage_path").eq("script_id",sid).eq("content_hash",ch).eq("voice_id",vid).single();if(c){const{data:dl}=await sb.storage.from("audio-cache").download(c.storage_path);if(dl)return URL.createObjectURL(dl)}}
-    const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid,{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:cl,model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75,style:0.4}})});
-    if(!r.ok)return null;const blob=await r.blob();
-    if(sb&&user){const path=user.id+"/"+ch+".mp3";await sb.storage.from("audio-cache").upload(path,blob,{contentType:"audio/mpeg",upsert:true});await sb.from("audio_cache").upsert({user_id:user.id,script_id:sid,content_hash:ch,voice_id:vid,storage_path:path})}
-    return URL.createObjectURL(blob)}
+    if(sb&&user){const{data:c}=await sb.from("audio_cache").select("storage_path,alignment_data").eq("script_id",sid).eq("content_hash",ch).eq("voice_id",vid).single();
+      if(c){const{data:dl}=await sb.storage.from("audio-cache").download(c.storage_path);
+        if(dl){const al=c.alignment_data?JSON.parse(c.alignment_data):null;return{url:URL.createObjectURL(dl),alignment:al}}}}
+    const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+vid+"/with-timestamps",{method:"POST",headers:{"Content-Type":"application/json","xi-api-key":elKey},body:JSON.stringify({text:cl,model_id:"eleven_flash_v2_5",voice_settings:{stability:0.75,similarity_boost:0.75,style:0.4}})});
+    if(!r.ok)return null;const json=await r.json();
+    const audioBytes=Uint8Array.from(atob(json.audio_base64),c=>c.charCodeAt(0));
+    const blob=new Blob([audioBytes],{type:"audio/mpeg"});
+    const al=json.alignment||null;
+    if(sb&&user){const path=user.id+"/"+ch+".mp3";await sb.storage.from("audio-cache").upload(path,blob,{contentType:"audio/mpeg",upsert:true});
+      await sb.from("audio_cache").upsert({user_id:user.id,script_id:sid,content_hash:ch,voice_id:vid,storage_path:path,alignment_data:al?JSON.stringify(al):null})}
+    return{url:URL.createObjectURL(blob),alignment:al}}
 
   // Tone.js
   async function enT(){if(!tOk.current){await Tone.start();tOk.current=true}if(!mG.current)mG.current=new Tone.Gain(1).toDestination()}
@@ -196,11 +218,15 @@ function App(){
   function skipToPlay(){setEP(false);beginAudio(cur,isAff)}
   function beginAudio(scr,affM){
     if(slpM>0){const end=Date.now()+slpM*60000;setTLeft(slpM*60);tmR.current=setInterval(()=>{const l=Math.max(0,Math.round((end-Date.now())/1000));setTLeft(l);if(l<=45&&l>0&&mG.current)mG.current.gain.value=l/45;if(l<=0)stopPlay(true)},1000)}
-    if(elKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(url=>{setALd(false);if(url&&plR.current){const a=new Audio(url);auE.current=a;a.loop=loopOn;a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;a.play()}},sett.loopGap*1000);else stopPlay(true)};a.play()}}).catch(()=>{setALd(false);fbTTS(scr)})}
+    if(elKey&&sett.elevenLabsVoiceId){setALd(true);genAudio(scr.content,scr.id).then(result=>{setALd(false);if(result&&result.url&&plR.current){
+      if(result.alignment){setAlignment(result.alignment);setSentences(buildSentences(scr.content,result.alignment))}
+      const a=new Audio(result.url);auE.current=a;a.loop=loopOn;
+      a.ontimeupdate=()=>{setCurTime(a.currentTime)};
+      a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;setCurTime(0);a.play()}},sett.loopGap*1000);else stopPlay(true)};a.play()}}).catch(()=>{setALd(false);fbTTS(scr)})}
     else fbTTS(scr)}
   function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
   function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
-  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
+  function stopPlay(log=false){plR.current=false;paR.current=false;setPlaying(false);setPaused(false);setBrAct(false);setTLeft(null);setALd(false);setEP(false);setAlignment(null);setSentences([]);setCurTime(0);if(auE.current){auE.current.pause();auE.current=null}window.speechSynthesis.cancel();stopSnd();if(tmR.current){clearInterval(tmR.current);tmR.current=null}if(mG.current)mG.current.gain.value=1;
     if(log&&seS.current){const dur=Math.round((Date.now()-seS.current)/60000);logSess(cur?.title||"Session",dur,energyChoice)}}
 
   // ═══ VIEWS ═══
@@ -326,10 +352,27 @@ function App(){
     return<div style={{height:"100vh",display:"flex",flexDirection:"column",overflow:"auto",background:dimmed&&playing?"#020308":P.bg,transition:"background 2s"}}>
       <div style={{padding:"20px 22px 0",opacity:dimmed&&playing?0.3:1,transition:"opacity 2s"}}><button onClick={()=>{if(playing)stopPlay(true);setVw("library");setIsAff(false)}} style={{background:"none",border:"none",color:P.ac,cursor:"pointer",fontSize:14}}>← Library</button></div>
       {cur&&<div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:22,textAlign:"center",opacity:dimmed&&playing?0.2:1,transition:"opacity 2s"}}>
+        {(!playing||sentences.length===0)&&<>
         <div style={{width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(140,110,230,0.15),transparent 70%)",border:"1px solid rgba(140,110,230,0.15)",display:"flex",justifyContent:"center",alignItems:"center",marginBottom:24,animation:playing&&!paused?"breathe 6s ease-in-out infinite":"none"}}><span style={{fontSize:36}}>{isAff?<Logo size={32}/>:"🌌"}</span></div>
-        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,letterSpacing:1}}>{cur.title}</h2>
+        <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,letterSpacing:1}}>{cur.title}</h2></>}
         {aLd&&<p style={{fontSize:13,color:P.ac,marginTop:14}}>Generating voice...</p>}
-        {playing&&!aLd&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
+        {playing&&!aLd&&sentences.length===0&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
+        {playing&&!aLd&&sentences.length>0&&(()=>{
+          const activeIdx=sentences.findIndex((s,i)=>curTime>=s.start&&curTime<s.end);
+          return<div style={{width:"100%",maxHeight:280,overflow:"hidden",position:"relative",margin:"0 auto"}}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:40,background:"linear-gradient(180deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,height:40,background:"linear-gradient(0deg,"+(dimmed?"#020308":P.bg)+",transparent)",zIndex:1,pointerEvents:"none"}}/>
+          <div style={{padding:"50px 0",display:"flex",flexDirection:"column",gap:12,transition:"transform 0.8s ease",transform:"translateY("+(-(Math.max(0,activeIdx-1))*44)+"px)"}}>
+            {sentences.map((s,i)=>{const active=i===activeIdx;const past=activeIdx>=0?i<activeIdx:curTime>=s.end;
+              return<p key={i} style={{margin:0,padding:"6px 12px",borderRadius:10,fontSize:active?17:14,minHeight:32,
+                fontFamily:"'Cormorant Garamond',serif",lineHeight:1.7,letterSpacing:0.3,transition:"all 0.6s ease",
+                color:active?"#fff":past?"rgba(160,140,200,0.15)":"rgba(160,140,200,0.35)",
+                fontWeight:active?500:400,
+                background:active?"rgba(140,110,230,0.1)":"transparent",
+                transform:active?"scale(1.02)":"scale(1)"}}>{s.text}</p>})}
+          </div>
+        </div>})()}
+        {playing&&!aLd&&sentences.length>0&&<p style={{fontSize:11,color:P.mt,marginTop:8,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
         {tLeft!==null&&<div style={{marginTop:8,fontSize:14,color:P.mt,fontFamily:"monospace"}}>⏱ {fmt(tLeft)}</div>}</div>}
       <div style={{padding:"0 22px 16px",opacity:dimmed&&playing?0.25:1,transition:"opacity 2s"}}>
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:24,marginBottom:18}}>
