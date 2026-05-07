@@ -222,7 +222,8 @@ function App(){
       if(result.alignment){setAlignment(result.alignment);setSentences(buildSentences(scr.content,result.alignment))}
       const a=new Audio(result.url);auE.current=a;a.loop=loopOn;
       a.ontimeupdate=()=>{setCurTime(a.currentTime)};
-      a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;setCurTime(0);a.play()}},sett.loopGap*1000);else stopPlay(true)};a.play()}}).catch(()=>{setALd(false);fbTTS(scr)})}
+      a.onended=()=>{if(loopOn&&plR.current)setTimeout(()=>{if(plR.current){a.currentTime=0;setCurTime(0);a.play()}},sett.loopGap*1000);else stopPlay(true)};
+      if(!paR.current){a.play()}else{setPaused(true)}}}).catch(()=>{setALd(false);fbTTS(scr)})}
     else fbTTS(scr)}
   function fbTTS(scr){setTimeout(()=>{if(!plR.current)return;const t=scr.content.replace(/\[pause\s+\d+s?\]/gi,"...").replace(/\[PHASE[^\]]*\]/gi,"");const u=new SpeechSynthesisUtterance(t);u.rate=sett.speechRate;u.pitch=sett.speechPitch;const v=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));if(v.length)u.voice=v[0];u.onend=()=>{if(loopOn&&plR.current)setTimeout(()=>fbTTS(scr),sett.loopGap*1000);else stopPlay(true)};window.speechSynthesis.speak(u)},2000)}
   function togPause(){if(auE.current){if(paused){auE.current.play();paR.current=false;setPaused(false)}else{auE.current.pause();paR.current=true;setPaused(true)}}else{if(paused){window.speechSynthesis.resume();paR.current=false;setPaused(false)}else{window.speechSynthesis.pause();paR.current=true;setPaused(true)}}}
@@ -355,7 +356,7 @@ function App(){
         {(!playing||sentences.length===0)&&<>
         <div style={{width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(140,110,230,0.15),transparent 70%)",border:"1px solid rgba(140,110,230,0.15)",display:"flex",justifyContent:"center",alignItems:"center",marginBottom:24,animation:playing&&!paused?"breathe 6s ease-in-out infinite":"none"}}><span style={{fontSize:36}}>{isAff?<Logo size={32}/>:"🌌"}</span></div>
         <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,letterSpacing:1}}>{cur.title}</h2></>}
-        {aLd&&<p style={{fontSize:13,color:P.ac,marginTop:14}}>Generating voice...</p>}
+        {aLd&&<div style={{marginTop:14,textAlign:"center"}}><div style={{display:"inline-block",animation:"spin 2s linear infinite",marginBottom:8}}><Logo size={24}/></div><p style={{fontSize:14,color:P.ac,margin:0}}>Generating voice...</p><p style={{fontSize:11,color:P.mt,marginTop:4}}>This may take a moment for longer scripts</p></div>}
         {playing&&!aLd&&sentences.length===0&&<p style={{fontSize:13,color:P.mt,marginTop:12,fontStyle:"italic"}}>{paused?"Paused":"Occupying..."}</p>}
         {playing&&!aLd&&sentences.length>0&&(()=>{
           const activeIdx=sentences.findIndex((s,i)=>curTime>=s.start&&curTime<s.end);
